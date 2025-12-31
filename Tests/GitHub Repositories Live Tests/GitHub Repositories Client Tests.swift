@@ -71,7 +71,7 @@ struct GitHubRepositoriesClientTests {
         #expect(repository.private == true)
 
         // Clean up - delete the test repository
-        _ = try? await repositories.client.delete(repository.owner.login, repository.name)
+        try await repositories.client.delete(repository.owner.login, repository.name)
     }
 
     @Test("Should successfully update a repository")
