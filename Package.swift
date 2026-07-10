@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.3.1
 
 import PackageDescription
 
@@ -50,15 +50,15 @@ extension Target.Dependency {
         .product(name: "Authenticating", package: "swift-authenticating")
     }
     static var dependenciesTestSupport: Self {
-        .product(name: "DependenciesTestSupport", package: "swift-dependencies")
+        .product(name: "Dependencies Test Support", package: "swift-dependencies")
     }
 }
 
 let package = Package(
     name: "swift-github-live",
     platforms: [
-        .macOS(.v14),
-        .iOS(.v17),
+        .macOS(.v26),
+        .iOS(.v26),
     ],
     products: [
         .library(name: .githubLive, targets: [.githubLive]),
@@ -70,10 +70,10 @@ let package = Package(
         .library(name: .githubLiveShared, targets: [.githubLiveShared]),
     ],
     dependencies: [
-        .package(url: "https://github.com/coenttb/swift-github-types", from: "0.1.0"),
-        .package(url: "https://github.com/coenttb/swift-server-foundation", from: "0.0.1"),
+        .package(url: "https://github.com/swift-standards/swift-github-types.git", branch: "main"),
+        .package(url: "https://github.com/swift-foundations/swift-server-foundation.git", branch: "main"),
         .package(url: "https://github.com/coenttb/swift-authenticating", from: "0.0.2"),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.2"),
+        .package(url: "https://github.com/swift-foundations/swift-dependencies.git", branch: "main"),
     ],
     targets: [
         .target(
