@@ -6,7 +6,7 @@
 //
 
 import Dependencies
-import DependenciesTestSupport
+import Dependencies_Test_Support
 import Foundation
 import GitHub_Repositories_Live
 import GitHub_Repositories_Types
