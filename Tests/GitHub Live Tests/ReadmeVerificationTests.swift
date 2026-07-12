@@ -7,7 +7,6 @@
 
 import Dependencies
 import Dependencies_Test_Support
-import EnvironmentVariables
 import Foundation
 import GitHub_Live
 import GitHub_Repositories_Types
@@ -234,14 +233,14 @@ struct ReadmeVerificationTests {
         _ = github.client
 
         // Verify router is accessible
-        _ = github.router
+        _ = github.apiRouter
     }
 
     @Test("Verify Authenticated wrapper structure")
     func authenticatedWrapperTest() {
         // Verify the authenticated wrapper provides client and router
         _ = github.client
-        _ = github.router
+        _ = github.apiRouter
 
         // Verify type is GitHub.Authenticated
         #expect(type(of: github) == GitHub.Authenticated.self)

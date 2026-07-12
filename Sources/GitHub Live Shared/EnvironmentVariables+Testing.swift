@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 22/08/2025.
 //
 
-import EnvironmentVariables
 import Foundation
+import ServerFoundationEnvVars
 
 // MARK: - Test Environment Variables
 
@@ -40,20 +40,16 @@ extension EnvironmentVariables {
                 environmentConfiguration: EnvironmentConfiguration.projectRoot(
                     projectRoot,
                     environment: "development"
-                ),
-                requiredKeys: []
+                )
             ))
-            ?? (try! Self.live(
-                environmentConfiguration: EnvironmentConfiguration.none,
-                requiredKeys: []
-            ))
+            ?? (try! Self.live())
     }
 }
 
 // MARK: - Context for Testing
 
 extension Dependency.Values {
-    struct Context: Sendable {
+    package struct Context: Sendable {
         enum ContextType: Sendable {
             case live
             case test
@@ -61,11 +57,11 @@ extension Dependency.Values {
 
         let type: ContextType
 
-        static let live = Context(type: .live)
-        static let test = Context(type: .test)
+        package static let live = Context(type: .live)
+        package static let test = Context(type: .test)
     }
 
-    var context: Context {
+    package var context: Context {
         get { self[ContextKey.self] }
         set { self[ContextKey.self] = newValue }
     }
