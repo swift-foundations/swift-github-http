@@ -170,6 +170,13 @@ let package = Package(
             ]
         ),
         .testTarget(
+            name: "GitHub Live Shared Tests",
+            dependencies: [
+                .githubLiveShared,
+                .dependenciesTestSupport,
+            ]
+        ),
+        .testTarget(
             name: "GitHub Live Tests",
             dependencies: [
                 .githubLive,

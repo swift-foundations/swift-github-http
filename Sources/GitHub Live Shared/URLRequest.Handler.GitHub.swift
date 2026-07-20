@@ -29,7 +29,7 @@ struct GitHubThrottledClientKey: Dependency.Key {
             backoffMultiplier: 2.0
         ),
         pacer: RequestPacer<String>(
-            targetRate: 25.0  // 10 requests per second with smooth pacing
+            targetRate: 25.0  // 25 requests per second with smooth pacing
         )
     )
 
@@ -89,34 +89,15 @@ extension URLRequest.Handler.GitHub: Dependency.Key {
         // Extract token from Authorization header for per-token rate limiting
         let rateLimitKey = extractToken(from: request) ?? "anonymous"
 
-        // Use ThrottledClient to check both rate limits and pacing
-        let acquisitionResult = await throttledClient.acquire(rateLimitKey)
-
-        if !acquisitionResult.canProceed {
-            // We're rate limited, wait and retry
-            if let retryAfter = acquisitionResult.retryAfter {
-                let jitteredDelay = addJitter(to: min(retryAfter, 60))
-                let waitDuration = Duration.seconds(jitteredDelay)
-                try await clock.sleep(for: waitDuration)
-            } else if let rateLimitResult = acquisitionResult.rateLimitResult,
-                let nextAllowedAttempt = rateLimitResult.nextAllowedAttempt
-            {
-                // Use next allowed attempt time if retry after not provided
-                let waitTime = nextAllowedAttempt.timeIntervalSinceNow
-                if waitTime > 0 {
-                    let jitteredDelay = addJitter(to: min(waitTime, 60))
-                    let waitDuration = Duration.seconds(jitteredDelay)
-                    try await clock.sleep(for: waitDuration)
-                }
-            }
-
-            // Retry after waiting
-            return try await performRateLimitedRequest(
-                request,
-                retryCount: retryCount,
-                maxRetries: maxRetries
-            )
-        }
+        // Use ThrottledClient to check both rate limits and pacing.
+        // Acquisition is bounded: it waits (with a floor delay and jitter)
+        // between attempts and throws a typed rate-limited error once the
+        // attempt bound is exceeded, instead of recursing unboundedly.
+        let acquisitionResult = try await acquireThrottledSlot(
+            rateLimitKey,
+            client: throttledClient,
+            maxAttempts: maxRetries
+        )
 
         // Wait for the scheduled time to maintain proper pacing
         try await acquisitionResult.waitUntilReady()
@@ -189,6 +170,68 @@ extension URLRequest.Handler.GitHub: Dependency.Key {
             // Record failure for network errors
             await throttledClient.recordFailure(rateLimitKey)
             throw error
+        }
+    }
+
+    /// The minimum delay between throttle-acquisition attempts.
+    ///
+    /// Applied when the throttled client provides no wait hint (or a
+    /// non-positive one), so the retry loop can never spin with zero delay.
+    package static let minimumAcquisitionDelay: TimeInterval = 0.1
+
+    /// The maximum delay between throttle-acquisition attempts.
+    package static let maximumAcquisitionDelay: TimeInterval = 60
+
+    /// Computes the delay before the next throttle-acquisition attempt.
+    ///
+    /// - Parameters:
+    ///   - retryAfter: The client's retry-after hint, if any.
+    ///   - nextAllowedAttemptWait: Seconds until the rate limiter's next
+    ///     allowed attempt, if known.
+    /// - Returns: A jittered delay clamped to
+    ///   `minimumAcquisitionDelay...maximumAcquisitionDelay`.
+    package static func acquisitionDelay(
+        retryAfter: TimeInterval?,
+        nextAllowedAttemptWait: TimeInterval?
+    ) -> TimeInterval {
+        let hint = retryAfter ?? nextAllowedAttemptWait
+        guard let hint, hint > 0 else { return minimumAcquisitionDelay }
+        return max(addJitter(to: min(hint, maximumAcquisitionDelay)), minimumAcquisitionDelay)
+    }
+
+    /// Acquires a throttle slot, retrying a bounded number of times.
+    ///
+    /// Honors task cancellation between attempts and enforces a minimum
+    /// floor delay so the loop cannot spin with zero delay.
+    ///
+    /// - Throws: `URLRequest.Handler.GitHub.Error.rateLimited` once
+    ///   `maxAttempts` denied acquisitions have occurred, or
+    ///   `CancellationError` if the task is cancelled.
+    package static func acquireThrottledSlot(
+        _ key: String,
+        client: ThrottledClient<String>,
+        maxAttempts: Int
+    ) async throws -> ThrottledClient<String>.AcquisitionResult {
+        @Dependency(\.clock) var clock
+
+        var attempts = 0
+        while true {
+            try Task.checkCancellation()
+
+            let result = await client.acquire(key)
+            if result.canProceed { return result }
+
+            attempts += 1
+            guard attempts < maxAttempts else {
+                throw Error.rateLimited(attempts: attempts)
+            }
+
+            let delay = acquisitionDelay(
+                retryAfter: result.retryAfter,
+                nextAllowedAttemptWait: result.rateLimitResult?.nextAllowedAttempt?
+                    .timeIntervalSinceNow
+            )
+            try await clock.sleep(for: .seconds(delay))
         }
     }
 
