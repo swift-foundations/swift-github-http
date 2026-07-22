@@ -18,19 +18,25 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: "../swift-github"),
-        .package(path: "../swift-json"),
-        .package(path: "../../swift-ietf/swift-rfc-3986"),
-        .package(path: "../../swift-ietf/swift-rfc-8288"),
-        .package(path: "../../swift-standards/swift-github-types"),
-        .package(path: "../../swift-standards/swift-http-standard"),
+        .package(url: "https://github.com/swift-foundations/swift-github.git", branch: "main"),
+        .package(url: "https://github.com/swift-foundations/swift-json.git", branch: "main"),
+        .package(url: "https://github.com/swift-ietf/swift-rfc-3986.git", branch: "main"),
+        .package(url: "https://github.com/swift-ietf/swift-rfc-8288.git", branch: "main"),
+        .package(
+            url: "https://github.com/swift-standards/swift-github-standard.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-standards/swift-http-standard.git",
+            branch: "main"
+        ),
     ],
     targets: [
         .target(
             name: "GitHub HTTP",
             dependencies: [
                 .product(name: "GitHub", package: "swift-github"),
-                .product(name: "GitHub Standard", package: "swift-github-types"),
+                .product(name: "GitHub Standard", package: "swift-github-standard"),
                 .product(name: "HTTP Standard", package: "swift-http-standard"),
                 .product(name: "JSON", package: "swift-json"),
                 .product(name: "RFC 3986", package: "swift-rfc-3986"),
