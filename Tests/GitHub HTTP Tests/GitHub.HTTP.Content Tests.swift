@@ -1,7 +1,5 @@
-import HTTP_Standard
+import GitHub_HTTP
 import Testing
-
-@testable import GitHub_HTTP
 
 extension GitHub.HTTP {
     @Suite("GitHub.HTTP.Content.Unit")

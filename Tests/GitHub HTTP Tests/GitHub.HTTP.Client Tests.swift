@@ -1,11 +1,22 @@
-import HTTP_Standard
+import GitHub_HTTP
 import Testing
-
-@testable import GitHub_HTTP
 
 extension GitHub.HTTP {
     @Suite("GitHub.HTTP.Client.Unit")
     struct Unit {
+        @Test("The product re-exports the HTTP execute surface")
+        func exports() {
+            let headers = HTTP.Headers()
+            let request = HTTP.Request(method: .options, target: .asterisk, headers: headers)
+            let response = HTTP.Response(status: .ok, headers: headers)
+
+            #expect(request.method == .options)
+            #expect(request.target == .asterisk)
+            #expect(request.headers.isEmpty)
+            #expect(response.status == .ok)
+            #expect(response.headers.isEmpty)
+        }
+
         @Test("The adapter maps the provider request and decodes a response page")
         func page() async throws {
             let http = GitHub.HTTP.Client<Fixture.Execution, Fixture.Pagination>(
