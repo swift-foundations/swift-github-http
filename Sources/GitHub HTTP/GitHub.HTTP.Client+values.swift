@@ -6,7 +6,7 @@ import RFC_3339
 import RFC_3986
 
 extension GitHub.HTTP.Client {
-    static func emailAddress(_ json: JSON) throws(JSON.Error) -> EmailAddress {
+    static func email(_ json: JSON) throws(JSON.Error) -> EmailAddress {
         let raw = try String.deserialize(json)
         do throws(EmailAddress.Error) {
             return try .init(raw)
@@ -15,7 +15,7 @@ extension GitHub.HTTP.Client {
         }
     }
 
-    static func emailAddressIfPresent(_ json: JSON) throws(JSON.Error) -> EmailAddress? {
+    static func email(ifPresent json: JSON) throws(JSON.Error) -> EmailAddress? {
         guard let raw = try String?.deserialize(json) else { return nil }
         do throws(EmailAddress.Error) {
             return try .init(raw)
@@ -35,7 +35,7 @@ extension GitHub.HTTP.Client {
         return value
     }
 
-    static func dateTime(_ json: JSON) throws(JSON.Error) -> RFC_3339.DateTime {
+    static func timestamp(_ json: JSON) throws(JSON.Error) -> RFC_3339.DateTime {
         let raw = try String.deserialize(json)
         do throws(RFC_3339.DateTime.Error) {
             return try .init(raw)
@@ -44,7 +44,7 @@ extension GitHub.HTTP.Client {
         }
     }
 
-    static func dateTimeIfPresent(_ json: JSON) throws(JSON.Error) -> RFC_3339.DateTime? {
+    static func timestamp(ifPresent json: JSON) throws(JSON.Error) -> RFC_3339.DateTime? {
         guard let raw = try String?.deserialize(json) else { return nil }
         do throws(RFC_3339.DateTime.Error) {
             return try .init(raw)
@@ -62,7 +62,7 @@ extension GitHub.HTTP.Client {
         }
     }
 
-    static func uriIfPresent(_ json: JSON) throws(JSON.Error) -> RFC_3986.URI? {
+    static func uri(ifPresent json: JSON) throws(JSON.Error) -> RFC_3986.URI? {
         guard let raw = try String?.deserialize(json) else { return nil }
         do throws(RFC_3986.Error) {
             return try .init(raw)
@@ -117,7 +117,7 @@ extension GitHub.HTTP.Client {
                 key: String.deserialize(value["key"]),
                 name: String.deserialize(value["name"]),
                 spdxID: String.deserialize(value["spdx_id"]),
-                url: uriIfPresent(value["url"]),
+                url: uri(ifPresent: value["url"]),
                 nodeID: String.deserialize(value["node_id"])
             )
         }
@@ -132,7 +132,7 @@ extension GitHub.HTTP.Client {
             owner: owner(from: json["owner"]),
             htmlURL: uri(json["html_url"]),
             url: uri(json["url"]),
-            homepage: uriIfPresent(json["homepage"]),
+            homepage: uri(ifPresent: json["homepage"]),
             description: String?.deserialize(json["description"]),
             isPrivate: Bool.deserialize(json["private"]),
             isFork: Bool.deserialize(json["fork"]),
@@ -161,9 +161,9 @@ extension GitHub.HTTP.Client {
                 json["watchers_count"], expected: "nonnegative watcher count"
             ),
             size: nonnegative(json["size"], expected: "nonnegative repository size"),
-            createdAt: dateTime(json["created_at"]),
-            updatedAt: dateTime(json["updated_at"]),
-            pushedAt: dateTimeIfPresent(json["pushed_at"])
+            createdAt: timestamp(json["created_at"]),
+            updatedAt: timestamp(json["updated_at"]),
+            pushedAt: timestamp(ifPresent: json["pushed_at"])
         )
     }
 }

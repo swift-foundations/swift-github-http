@@ -2,7 +2,7 @@ import HTTP_Standard
 import GitHub_Standard
 
 extension GitHub.HTTP.Pagination {
-    public struct Witness<Failure: Swift.Error & Sendable>: Sendable {
+    public struct Witness<Failure: Swift.Error>: Sendable {
         public var next: @Sendable (HTTP.Headers) throws(Failure) -> GitHub.Page.Number?
 
         public init(

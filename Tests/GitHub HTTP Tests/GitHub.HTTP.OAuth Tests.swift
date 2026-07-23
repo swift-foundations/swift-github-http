@@ -2,15 +2,15 @@ import GitHub_HTTP
 import RFC_3986
 import Testing
 
-extension GitHub.HTTP {
+extension GitHub.HTTP.OAuth {
     @Suite("GitHub.HTTP.OAuth.Unit")
-    struct OAuthTests {
+    struct Test {
         @Test("Authorization maps provider query values without executing")
         func authorization() throws {
-            let http = Client<Fixture.Execution, Never>(
+            let http = GitHub.HTTP.Client<GitHub.HTTP.Fixture.Execution, Never>(
                 agent: .init(rawValue: "oauth-tests"),
                 version: .init(rawValue: "2026-03-10"),
-                execute: { _ async throws(Fixture.Execution) in throw .unexpected },
+                execute: { _ async throws(GitHub.HTTP.Fixture.Execution) in throw .unexpected },
                 pagination: .none
             )
             let response = try http.oauth.authorization.authorize(
@@ -30,14 +30,20 @@ extension GitHub.HTTP {
 
         @Test("Token exchange uses canonical form body and decodes success")
         func token() async throws {
-            let http = Client<Fixture.Execution, Never>(
+            let http = GitHub.HTTP.Client<GitHub.HTTP.Fixture.Execution, Never>(
                 agent: .init(rawValue: "oauth-tests"),
                 version: .init(rawValue: "2026-03-10"),
-                execute: { request async throws(Fixture.Execution) in
+                execute: { request async throws(GitHub.HTTP.Fixture.Execution) in
                     #expect(request.method == .post)
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                     #expect(request.target.rawValue == "https://github.com/login/oauth/access_token")
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                     #expect(request.headers.first("Accept")?.rawValue == "application/json")
                     #expect(
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                         request.headers.first("Content-Type")?.rawValue
                             == "application/x-www-form-urlencoded"
                     )
@@ -51,7 +57,7 @@ extension GitHub.HTTP {
                     )
                     return .init(
                         status: .ok,
-                        body: Fixture.bytes(
+                        body: GitHub.HTTP.Fixture.bytes(
                             #"{"access_token":"token","token_type":"bearer","scope":"read:user,user:email"}"#
                         )
                     )
@@ -70,15 +76,15 @@ extension GitHub.HTTP {
             #expect(response.scope == "read:user,user:email")
         }
 
-        @Test("Token endpoint provider errors remain typed")
-        func providerError() async throws {
-            let http = Client<Fixture.Execution, Never>(
+        @Test
+        func `token endpoint provider errors remain typed`() async throws {
+            let http = GitHub.HTTP.Client<GitHub.HTTP.Fixture.Execution, Never>(
                 agent: .init(rawValue: "oauth-tests"),
                 version: .init(rawValue: "2026-03-10"),
-                execute: { _ async throws(Fixture.Execution) in
+                execute: { _ async throws(GitHub.HTTP.Fixture.Execution) in
                     .init(
                         status: .ok,
-                        body: Fixture.bytes(
+                        body: GitHub.HTTP.Fixture.bytes(
                             #"{"error":"bad_verification_code","error_description":"The code passed is incorrect or expired."}"#
                         )
                     )
@@ -86,7 +92,7 @@ extension GitHub.HTTP {
                 pagination: .none
             )
 
-            do {
+            do throws(GitHub.HTTP.OAuth.Error<GitHub.HTTP.Fixture.Execution>) {
                 _ = try await http.oauth.token.exchange.exchange(
                     .init(clientID: "id", clientSecret: "secret", code: "bad")
                 )

@@ -33,12 +33,18 @@ extension GitHub.HTTP.Client {
         var headers = HTTP.Headers()
         do throws(HTTP.Header.Field.Error) {
             headers.append(try .init(name: "Accept", value: accept))
+            // swift-linter:disable:next raw value access
+            // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
             headers.append(try .init(name: "User-Agent", value: self.agent.rawValue))
             headers.append(
+                // swift-linter:disable:next raw value access
+                // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                 try .init(name: "X-GitHub-Api-Version", value: self.version.rawValue)
             )
             if case .token(let token) = authentication {
                 headers.append(
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                     try .init(name: "Authorization", value: "Bearer \(token.rawValue)")
                 )
             }

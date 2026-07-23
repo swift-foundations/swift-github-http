@@ -24,7 +24,7 @@ extension GitHub.HTTP.User.Authenticated.Accessor {
                         login: .init(rawValue: String.deserialize(json["login"])),
                         name: String?.deserialize(json["name"]),
                         email: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
-                            .emailAddressIfPresent(json["email"]),
+                            .email(ifPresent: json["email"]),
                         avatarURL: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
                             .uri(json["avatar_url"]),
                         bio: String?.deserialize(json["bio"]),
@@ -40,9 +40,9 @@ extension GitHub.HTTP.User.Authenticated.Accessor {
                         following: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
                             .nonnegative(json["following"], expected: "nonnegative following count"),
                         createdAt: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
-                            .dateTime(json["created_at"]),
+                            .timestamp(json["created_at"]),
                         updatedAt: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
-                            .dateTime(json["updated_at"])
+                            .timestamp(json["updated_at"])
                     )
                 )
             } catch {

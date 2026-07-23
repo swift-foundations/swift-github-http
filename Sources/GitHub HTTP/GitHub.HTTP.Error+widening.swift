@@ -2,7 +2,7 @@ extension GitHub.HTTP.Error where PaginationFailure == Never {
     func widening<NewPaginationFailure>() -> GitHub.HTTP.Error<
         ExecutionFailure,
         NewPaginationFailure
-    > where NewPaginationFailure: Swift.Error & Sendable {
+    > where NewPaginationFailure: Swift.Error {
         switch self {
         case .execute(let error): return .execute(error)
         case .header(let error): return .header(error)

@@ -10,7 +10,11 @@ extension GitHub.HTTP.User.Authenticated {
                 agent: .init(rawValue: "user-tests"),
                 version: .init(rawValue: "2026-03-10"),
                 execute: { request async throws(GitHub.HTTP.Fixture.Execution) in
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                     #expect(request.target.rawValue == "https://api.github.com/user")
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                     #expect(request.headers.first("Authorization")?.rawValue == "Bearer token")
                     return .init(
                         status: .ok,
@@ -25,6 +29,8 @@ extension GitHub.HTTP.User.Authenticated {
                 .init(accessToken: "token")
             )
 
+            // swift-linter:disable:next raw value access
+            // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
             #expect(response.user.login.rawValue == "octocat")
             #expect(response.user.email == nil)
             #expect(response.user.publicRepos == 8)
@@ -36,7 +42,11 @@ extension GitHub.HTTP.User.Authenticated {
                 agent: .init(rawValue: "user-tests"),
                 version: .init(rawValue: "2026-03-10"),
                 execute: { request async throws(GitHub.HTTP.Fixture.Execution) in
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                     #expect(request.target.rawValue == "https://api.github.com/user/emails")
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                     #expect(request.headers.first("Authorization")?.rawValue == "Bearer token")
                     return .init(
                         status: .ok,

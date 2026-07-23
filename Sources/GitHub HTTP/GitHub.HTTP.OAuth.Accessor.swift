@@ -1,8 +1,8 @@
 extension GitHub.HTTP.OAuth {
     public struct Accessor<ExecutionFailure, PaginationFailure>: Sendable
     where
-        ExecutionFailure: Swift.Error & Sendable,
-        PaginationFailure: Swift.Error & Sendable
+        ExecutionFailure: Swift.Error,
+        PaginationFailure: Swift.Error
     {
         let client: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
 

@@ -25,13 +25,21 @@ extension GitHub.HTTP {
                 execute: { request async throws(Fixture.Execution) in
                     #expect(request.method == .get)
                     #expect(
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                         request.target.rawValue
                             == "https://api.github.com/orgs/swiftlang/repos?type=public&per_page=100&page=1"
                     )
                     #expect(
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                         request.headers.first("Accept")?.rawValue == "application/vnd.github+json"
                     )
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                     #expect(request.headers.first("User-Agent")?.rawValue == "swift-institute")
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                     #expect(request.headers.first("X-GitHub-Api-Version")?.rawValue == "2026-03-10")
                     #expect(request.headers.first("Authorization") == nil)
 
@@ -50,7 +58,11 @@ extension GitHub.HTTP {
 
             #expect(page.next == nil)
             #expect(page.response.repositories.count == 1)
+            // swift-linter:disable:next raw value access
+            // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
             #expect(page.response.repositories.first?.id.rawValue == 42)
+            // swift-linter:disable:next raw value access
+            // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
             #expect(page.response.repositories.first?.name.rawValue == "swift")
         }
 
@@ -60,6 +72,8 @@ extension GitHub.HTTP {
                 agent: .init(rawValue: "swift-institute"),
                 version: .init(rawValue: "2026-03-10"),
                 execute: { request async throws(Fixture.Execution) in
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                     #expect(request.headers.first("Authorization")?.rawValue == "Bearer secret")
                     return HTTP.Response(status: .ok, body: Self.bytes("[]"))
                 },

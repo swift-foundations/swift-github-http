@@ -3,8 +3,8 @@ import GitHub_Standard
 import HTTP_Standard
 import JSON
 
-extension GitHub.HTTP.Client {
-    public func userRepositories(
+extension GitHub.HTTP.User.Accessor {
+    public func repositories(
         authentication: GitHub.HTTP.Authentication
     ) -> GitHub.User.Repositories.Client<
         GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>
@@ -12,36 +12,52 @@ extension GitHub.HTTP.Client {
         .init { request async throws(GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>) in
             var parameters: [(String, String?)] = []
             if let visibility = request.visibility {
+                // swift-linter:disable:next raw value access
+                // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                 parameters.append(("visibility", visibility.rawValue))
             }
             if let affiliation = request.affiliation {
                 parameters.append(("affiliation", affiliation))
             }
             if let type = request.type {
+                // swift-linter:disable:next raw value access
+                // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                 parameters.append(("type", type.rawValue))
             }
             if let sort = request.sort {
+                // swift-linter:disable:next raw value access
+                // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                 parameters.append(("sort", sort.rawValue))
             }
             if let direction = request.direction {
+                // swift-linter:disable:next raw value access
+                // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                 parameters.append(("direction", direction.rawValue))
             }
             if let size = request.size {
+                // swift-linter:disable:next raw value access
+                // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                 parameters.append(("per_page", String(size.rawValue)))
             }
             if let page = request.page {
+                // swift-linter:disable:next raw value access
+                // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                 parameters.append(("page", String(page.rawValue)))
             }
             if let since = request.since {
+                // swift-linter:disable:next raw value access
+                // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                 parameters.append(("since", since.rawValue))
             }
             if let before = request.before {
+                // swift-linter:disable:next raw value access
+                // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                 parameters.append(("before", before.rawValue))
             }
 
             let httpRequest: HTTP.Request
             do throws(GitHub.HTTP.Error<ExecutionFailure, Never>) {
-                httpRequest = try self.request(
+                httpRequest = try self.client.request(
                     path: ["user", "repos"],
                     query: parameters,
                     authentication: authentication
@@ -52,7 +68,7 @@ extension GitHub.HTTP.Client {
 
             let httpResponse: HTTP.Response
             do throws(GitHub.HTTP.Error<ExecutionFailure, Never>) {
-                httpResponse = try await self.response(for: httpRequest)
+                httpResponse = try await self.client.response(for: httpRequest)
             } catch {
                 throw error.widening()
             }
@@ -63,7 +79,10 @@ extension GitHub.HTTP.Client {
                 var repositories: [GitHub.Repository.Metadata] = []
                 repositories.reserveCapacity(elements.count)
                 for element in elements {
-                    repositories.append(try Self.metadata(from: element))
+                    repositories.append(
+                        try GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
+                            .metadata(from: element)
+                    )
                 }
                 response = .init(repositories: repositories)
             } catch {
@@ -72,7 +91,7 @@ extension GitHub.HTTP.Client {
 
             let nextPage: GitHub.Page.Number?
             do throws(PaginationFailure) {
-                nextPage = try self.pagination.next(httpResponse.headers)
+                nextPage = try self.client.pagination.next(httpResponse.headers)
             } catch {
                 throw .pagination(error)
             }

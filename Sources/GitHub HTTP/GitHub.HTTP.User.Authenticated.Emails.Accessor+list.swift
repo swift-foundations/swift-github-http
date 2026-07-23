@@ -21,7 +21,7 @@ extension GitHub.HTTP.User.Authenticated.Emails.Accessor {
                     emails.append(
                         try .init(
                             email: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
-                                .emailAddress(element["email"]),
+                                .email(element["email"]),
                             primary: Bool.deserialize(element["primary"]),
                             verified: Bool.deserialize(element["verified"]),
                             visibility: String?.deserialize(element["visibility"])

@@ -17,10 +17,14 @@ extension GitHub.HTTP {
                 version: .init(rawValue: "2026-03-10"),
                 execute: { request async throws(Fixture.Execution) in
                     #expect(
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                         request.target.rawValue
                             == "https://api.github.com/repos/swiftlang/swift/stargazers?per_page=100&page=1"
                     )
                     #expect(
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                         request.headers.first("Accept")?.rawValue
                             == "application/vnd.github.star+json"
                     )
@@ -43,9 +47,17 @@ extension GitHub.HTTP {
                 )
             )
 
+            // swift-linter:disable:next raw value access
+            // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
             #expect(page.response.stargazers.first?.user.login.rawValue == "octocat")
+            // swift-linter:disable:next raw value access
+            // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
             #expect(page.next?.owner.rawValue == "swiftlang")
+            // swift-linter:disable:next raw value access
+            // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
             #expect(page.next?.repository.rawValue == "swift")
+            // swift-linter:disable:next raw value access
+            // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
             #expect(page.next?.page?.rawValue == 2)
             #expect(page.next?.size == .maximum)
         }

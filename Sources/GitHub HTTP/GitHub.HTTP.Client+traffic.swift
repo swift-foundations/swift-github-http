@@ -10,9 +10,13 @@ extension GitHub.HTTP.Client {
     > {
         .init(
             views: { request async throws(GitHub.HTTP.Error<ExecutionFailure, Never>) in
+                // swift-linter:disable:next raw value access
+                // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                 let parameters = request.interval.map { [("per", Optional($0.rawValue))] } ?? []
                 let httpRequest = try self.request(
                     path: [
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                         "repos", request.owner.rawValue, request.repository.rawValue,
                         "traffic", "views",
                     ],
@@ -29,7 +33,7 @@ extension GitHub.HTTP.Client {
                     for element in elements {
                         views.append(
                             try .init(
-                                timestamp: Self.dateTime(element["timestamp"]),
+                                timestamp: Self.timestamp(element["timestamp"]),
                                 count: Self.nonnegative(
                                     element["count"], expected: "nonnegative view count"
                                 ),
@@ -52,9 +56,13 @@ extension GitHub.HTTP.Client {
                 }
             },
             clones: { request async throws(GitHub.HTTP.Error<ExecutionFailure, Never>) in
+                // swift-linter:disable:next raw value access
+                // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                 let parameters = request.interval.map { [("per", Optional($0.rawValue))] } ?? []
                 let httpRequest = try self.request(
                     path: [
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                         "repos", request.owner.rawValue, request.repository.rawValue,
                         "traffic", "clones",
                     ],
@@ -71,7 +79,7 @@ extension GitHub.HTTP.Client {
                     for element in elements {
                         clones.append(
                             try .init(
-                                timestamp: Self.dateTime(element["timestamp"]),
+                                timestamp: Self.timestamp(element["timestamp"]),
                                 count: Self.nonnegative(
                                     element["count"], expected: "nonnegative clone count"
                                 ),
@@ -96,6 +104,8 @@ extension GitHub.HTTP.Client {
             paths: { request async throws(GitHub.HTTP.Error<ExecutionFailure, Never>) in
                 let httpRequest = try self.request(
                     path: [
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                         "repos", request.owner.rawValue, request.repository.rawValue,
                         "traffic", "popular", "paths",
                     ],
@@ -131,6 +141,8 @@ extension GitHub.HTTP.Client {
             referrers: { request async throws(GitHub.HTTP.Error<ExecutionFailure, Never>) in
                 let httpRequest = try self.request(
                     path: [
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                         "repos", request.owner.rawValue, request.repository.rawValue,
                         "traffic", "popular", "referrers",
                     ],

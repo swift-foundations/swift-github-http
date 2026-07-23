@@ -32,6 +32,8 @@ extension GitHub.HTTP.OAuth.Token.Accessor {
                 do throws(HTTP.Header.Field.Error) {
                     headers.append(try .init(name: "Accept", value: "application/json"))
                     headers.append(
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                         try .init(name: "User-Agent", value: self.client.agent.rawValue)
                     )
                 } catch {
@@ -87,7 +89,7 @@ extension GitHub.HTTP.OAuth.Token.Accessor {
                         error: String.deserialize(json["error"]),
                         errorDescription: String?.deserialize(json["error_description"]),
                         errorURI: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
-                            .uriIfPresent(json["error_uri"])
+                            .uri(ifPresent: json["error_uri"])
                     )
                 } catch {
                     throw .http(.json(error))

@@ -12,9 +12,13 @@ extension GitHub.HTTP.Client {
         .init { request async throws(GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>) in
             var parameters: [(String, String?)] = []
             if let size = request.size {
+                // swift-linter:disable:next raw value access
+                // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                 parameters.append(("per_page", String(size.rawValue)))
             }
             if let page = request.page {
+                // swift-linter:disable:next raw value access
+                // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                 parameters.append(("page", String(page.rawValue)))
             }
 
@@ -22,6 +26,8 @@ extension GitHub.HTTP.Client {
             do throws(GitHub.HTTP.Error<ExecutionFailure, Never>) {
                 httpRequest = try self.request(
                     path: [
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                         "repos", request.owner.rawValue, request.repository.rawValue,
                         "stargazers",
                     ],
@@ -49,7 +55,7 @@ extension GitHub.HTTP.Client {
                     stargazers.append(
                         try .init(
                             user: Self.user(from: element["user"]),
-                            starredAt: Self.dateTime(element["starred_at"])
+                            starredAt: Self.timestamp(element["starred_at"])
                         )
                     )
                 }

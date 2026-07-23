@@ -12,6 +12,8 @@ extension GitHub.HTTP.Pagination {
                 )
             )
 
+            // swift-linter:disable:next raw value access
+            // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
             #expect(next?.rawValue == 2)
         }
 
@@ -24,6 +26,8 @@ extension GitHub.HTTP.Pagination {
                 )
             )
 
+            // swift-linter:disable:next raw value access
+            // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
             #expect(next?.rawValue == 3)
         }
 

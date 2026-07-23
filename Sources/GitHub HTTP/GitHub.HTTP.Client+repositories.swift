@@ -16,6 +16,8 @@ extension GitHub.HTTP.Client {
             let path: RFC_3986.URI.Path
             do throws(RFC_3986.URI.Path.Error) {
                 path = try .init(
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                     segments: ["orgs", request.organization.rawValue, "repos"]
                 )
             } catch {
@@ -25,8 +27,14 @@ extension GitHub.HTTP.Client {
             let query: RFC_3986.URI.Query
             do throws(RFC_3986.URI.Query.Error) {
                 query = try .init([
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                     ("type", request.type.rawValue),
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                     ("per_page", String(request.size.rawValue)),
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                     ("page", String(request.page.rawValue)),
                 ])
             } catch {
@@ -46,13 +54,19 @@ extension GitHub.HTTP.Client {
                     try .init(name: "Accept", value: "application/vnd.github+json")
                 )
                 headers.append(
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                     try .init(name: "User-Agent", value: self.agent.rawValue)
                 )
                 headers.append(
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                     try .init(name: "X-GitHub-Api-Version", value: self.version.rawValue)
                 )
                 if case .token(let token) = authentication {
                     headers.append(
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
                         try .init(name: "Authorization", value: "Bearer \(token.rawValue)")
                     )
                 }
