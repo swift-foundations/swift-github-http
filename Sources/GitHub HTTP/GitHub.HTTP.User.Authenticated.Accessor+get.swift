@@ -18,10 +18,10 @@ extension GitHub.HTTP.User.Authenticated.Accessor {
                 return try .init(
                     user: .init(
                         id: .init(
-                            rawValue: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
+                            GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
                                 .nonnegative(json["id"], expected: "nonnegative user id")
                         ),
-                        login: .init(rawValue: String.deserialize(json["login"])),
+                        login: .init(String.deserialize(json["login"])),
                         name: String?.deserialize(json["name"]),
                         email: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
                             .email(ifPresent: json["email"]),

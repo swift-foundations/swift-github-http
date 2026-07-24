@@ -14,8 +14,8 @@ extension GitHub.HTTP.Client {
                 path = try .init(
                     segments: [
                         "repos",
-                        request.organization.rawValue,
-                        request.repository.rawValue,
+                        request.organization.underlying,
+                        request.repository.underlying,
                         "contents",
                     ] + request.path.segments
                 )

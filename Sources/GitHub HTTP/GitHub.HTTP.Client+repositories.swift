@@ -18,7 +18,7 @@ extension GitHub.HTTP.Client {
                 path = try .init(
                     // swift-linter:disable:next raw value access
                     // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
-                    segments: ["orgs", request.organization.rawValue, "repos"]
+                    segments: ["orgs", request.organization.underlying, "repos"]
                 )
             } catch {
                 throw .path(error)
@@ -159,8 +159,8 @@ extension GitHub.HTTP.Client {
 
             repositories.append(
                 .init(
-                    id: .init(rawValue: id),
-                    name: .init(rawValue: name),
+                    id: .init(id),
+                    name: .init(name),
                     archived: archived,
                     disabled: disabled,
                     fork: fork,

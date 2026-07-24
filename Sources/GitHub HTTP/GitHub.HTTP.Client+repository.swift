@@ -12,7 +12,7 @@ extension GitHub.HTTP.Client {
             let httpRequest = try self.request(
                 // swift-linter:disable:next raw value access
                 // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
-                path: ["repos", request.owner.rawValue, request.repository.rawValue],
+                path: ["repos", request.owner.underlying, request.repository.underlying],
                 authentication: authentication
             )
             let httpResponse = try await self.response(for: httpRequest)

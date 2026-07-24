@@ -73,8 +73,8 @@ extension GitHub.HTTP.Client {
 
     static func owner(from json: JSON) throws(JSON.Error) -> GitHub.Owner.Summary {
         .init(
-            id: .init(rawValue: try nonnegative(json["id"], expected: "nonnegative owner id")),
-            login: .init(rawValue: try String.deserialize(json["login"])),
+            id: .init(try nonnegative(json["id"], expected: "nonnegative owner id")),
+            login: .init(try String.deserialize(json["login"])),
             nodeID: try String.deserialize(json["node_id"]),
             avatarURL: try uri(json["avatar_url"]),
             gravatarID: try String.deserialize(json["gravatar_id"]),
@@ -87,8 +87,8 @@ extension GitHub.HTTP.Client {
 
     static func user(from json: JSON) throws(JSON.Error) -> GitHub.User.Summary {
         .init(
-            id: .init(rawValue: try nonnegative(json["id"], expected: "nonnegative user id")),
-            login: .init(rawValue: try String.deserialize(json["login"])),
+            id: .init(try nonnegative(json["id"], expected: "nonnegative user id")),
+            login: .init(try String.deserialize(json["login"])),
             nodeID: try String.deserialize(json["node_id"]),
             avatarURL: try uri(json["avatar_url"]),
             gravatarID: try String.deserialize(json["gravatar_id"]),
@@ -124,10 +124,10 @@ extension GitHub.HTTP.Client {
 
         return try .init(
             id: .init(
-                rawValue: nonnegative(json["id"], expected: "nonnegative repository id")
+                nonnegative(json["id"], expected: "nonnegative repository id")
             ),
             nodeID: String.deserialize(json["node_id"]),
-            name: .init(rawValue: String.deserialize(json["name"])),
+            name: .init(String.deserialize(json["name"])),
             fullName: String.deserialize(json["full_name"]),
             owner: owner(from: json["owner"]),
             htmlURL: uri(json["html_url"]),

@@ -28,7 +28,7 @@ extension GitHub.HTTP.Client {
                     path: [
                         // swift-linter:disable:next raw value access
                         // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
-                        "repos", request.owner.rawValue, request.repository.rawValue,
+                        "repos", request.owner.underlying, request.repository.underlying,
                         "stargazers",
                     ],
                     query: parameters,
