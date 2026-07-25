@@ -1,5 +1,4 @@
-@_exported import Authentication_Foundation_Integration
-@_exported import GitHub_Types_Shared
 @_exported import Environment_Dependencies
+@_exported import GitHub_Types_Shared
 @_exported import Throttling_Dependencies
 @_exported import URLRequestHandler
