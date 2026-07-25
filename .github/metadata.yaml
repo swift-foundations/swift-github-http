@@ -1,0 +1,9 @@
+# .github/metadata.yaml
+description: "HTTP bindings for the typed GitHub operations published by swift-github."
+topics:
+  - foundations
+  - github
+  - http
+homepage: "https://swift-institute.org"
+readme:
+  family: E
