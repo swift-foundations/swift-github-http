@@ -151,14 +151,17 @@ extension GitHub.HTTP.Client {
             topics: [String].deserialize(json["topics"]),
             license: license,
             stargazersCount: nonnegative(
-                json["stargazers_count"], expected: "nonnegative stargazer count"
+                json["stargazers_count"],
+                expected: "nonnegative stargazer count"
             ),
             forksCount: nonnegative(json["forks_count"], expected: "nonnegative fork count"),
             openIssuesCount: nonnegative(
-                json["open_issues_count"], expected: "nonnegative open issue count"
+                json["open_issues_count"],
+                expected: "nonnegative open issue count"
             ),
             watchersCount: nonnegative(
-                json["watchers_count"], expected: "nonnegative watcher count"
+                json["watchers_count"],
+                expected: "nonnegative watcher count"
             ),
             size: nonnegative(json["size"], expected: "nonnegative repository size"),
             createdAt: timestamp(json["created_at"]),

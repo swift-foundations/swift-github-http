@@ -15,7 +15,9 @@ import Testing
 extension URLRequest.Handler.GitHub {
     @Suite("Unit", .dependency(\.context, .test))
     struct Unit {
-        @Test("Acquisition failure path throws a typed rate-limited error after a bounded number of attempts")
+        @Test(
+            "Acquisition failure path throws a typed rate-limited error after a bounded number of attempts"
+        )
         func acquisitionFailureIsBoundedAndTyped() async throws {
             // A limiter with a single slot in a 60-second window: the first
             // acquire consumes the slot, every subsequent acquire is denied.

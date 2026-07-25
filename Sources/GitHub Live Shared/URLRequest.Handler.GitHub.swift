@@ -150,7 +150,8 @@ extension URLRequest.Handler.GitHub: Dependency.Key {
 
                         // Wait and retry with jitter
                         let jitteredDelay = addJitter(to: waitTime)
-                        let waitDuration = Duration.seconds(min(jitteredDelay, 300))  // Cap at 5 minutes
+                        // Cap at 5 minutes
+                        let waitDuration = Duration.seconds(min(jitteredDelay, 300))
                         try await clock.sleep(for: waitDuration)
 
                         return try await performRateLimitedRequest(

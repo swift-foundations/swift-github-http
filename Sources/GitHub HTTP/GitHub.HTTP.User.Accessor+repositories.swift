@@ -6,9 +6,11 @@ import JSON
 extension GitHub.HTTP.User.Accessor {
     public func repositories(
         authentication: GitHub.HTTP.Authentication
-    ) -> GitHub.User.Repositories.Client<
-        GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>
-    > {
+    )
+        -> GitHub.User.Repositories.Client<
+            GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>
+        >
+    {
         .init { request async throws(GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>) in
             var parameters: [(String, String?)] = []
             if let visibility = request.visibility {

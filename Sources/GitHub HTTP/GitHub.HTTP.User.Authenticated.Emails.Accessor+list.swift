@@ -3,9 +3,11 @@ import GitHub_Standard
 import JSON
 
 extension GitHub.HTTP.User.Authenticated.Emails.Accessor {
-    public var list: GitHub.User.Authenticated.Emails.List.Client<
-        GitHub.HTTP.Error<ExecutionFailure, Never>
-    > {
+    public var list:
+        GitHub.User.Authenticated.Emails.List.Client<
+            GitHub.HTTP.Error<ExecutionFailure, Never>
+        >
+    {
         .init { request async throws(GitHub.HTTP.Error<ExecutionFailure, Never>) in
             let httpRequest = try self.client.request(
                 path: ["user", "emails"],

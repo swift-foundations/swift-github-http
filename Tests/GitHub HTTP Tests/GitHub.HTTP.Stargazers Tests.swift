@@ -9,7 +9,8 @@ extension GitHub.HTTP {
             let headers = try HTTP.Headers([
                 .init(
                     name: "Link",
-                    value: "<https://api.github.com/repos/swiftlang/swift/stargazers?per_page=100&page=2>; rel=next"
+                    value:
+                        "<https://api.github.com/repos/swiftlang/swift/stargazers?per_page=100&page=2>; rel=next"
                 )
             ])
             let http = GitHub.HTTP.Client<Fixture.Execution, GitHub.HTTP.Pagination.Error>(

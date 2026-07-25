@@ -21,7 +21,8 @@ extension URLRequest.Handler.GitHub.Error: CustomStringConvertible {
     public var description: String {
         switch self {
         case .rateLimited(let attempts):
-            return "GitHub request throttled: rate limit acquisition failed after \(attempts) attempts"
+            return
+                "GitHub request throttled: rate limit acquisition failed after \(attempts) attempts"
         }
     }
 }

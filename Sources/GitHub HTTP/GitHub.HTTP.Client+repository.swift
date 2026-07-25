@@ -5,9 +5,11 @@ import JSON
 extension GitHub.HTTP.Client {
     public func repository(
         authentication: GitHub.HTTP.Authentication
-    ) -> GitHub.Repository.Get.Client<
-        GitHub.HTTP.Error<ExecutionFailure, Never>
-    > {
+    )
+        -> GitHub.Repository.Get.Client<
+            GitHub.HTTP.Error<ExecutionFailure, Never>
+        >
+    {
         .init { request async throws(GitHub.HTTP.Error<ExecutionFailure, Never>) in
             let httpRequest = try self.request(
                 // swift-linter:disable:next raw value access

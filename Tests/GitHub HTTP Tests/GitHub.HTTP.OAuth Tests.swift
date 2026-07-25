@@ -37,7 +37,9 @@ extension GitHub.HTTP.OAuth {
                     #expect(request.method == .post)
                     // swift-linter:disable:next raw value access
                     // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
-                    #expect(request.target.rawValue == "https://github.com/login/oauth/access_token")
+                    #expect(
+                        request.target.rawValue == "https://github.com/login/oauth/access_token"
+                    )
                     // swift-linter:disable:next raw value access
                     // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                     #expect(request.headers.first("Accept")?.rawValue == "application/json")

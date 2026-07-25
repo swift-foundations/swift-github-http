@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 22/08/2025.
 //
 
-import Foundation
 import Environment_Dependencies
+import Foundation
 
 // MARK: - Test Environment Variables
 

@@ -12,7 +12,9 @@ extension GitHub.HTTP.User {
                     value: "<https://api.github.com/user/repos?page=3>; rel=next"
                 )
             ])
-            let http = GitHub.HTTP.Client<GitHub.HTTP.Fixture.Execution, GitHub.HTTP.Pagination.Error>(
+            let http = GitHub.HTTP.Client<
+                GitHub.HTTP.Fixture.Execution, GitHub.HTTP.Pagination.Error
+            >(
                 agent: .init(rawValue: "user-repository-tests"),
                 version: .init(rawValue: "2026-03-10"),
                 execute: { request async throws(GitHub.HTTP.Fixture.Execution) in

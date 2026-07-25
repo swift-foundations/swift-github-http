@@ -15,7 +15,8 @@ extension GitHub.HTTP {
         public init(
             agent: Agent,
             version: Version,
-            execute: @escaping @Sendable (HTTP.Request) async throws(ExecutionFailure) -> HTTP.Response,
+            execute:
+                @escaping @Sendable (HTTP.Request) async throws(ExecutionFailure) -> HTTP.Response,
             pagination: Pagination.Witness<PaginationFailure>
         ) {
             self.agent = agent

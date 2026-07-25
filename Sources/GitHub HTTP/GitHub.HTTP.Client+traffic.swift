@@ -5,9 +5,11 @@ import JSON
 extension GitHub.HTTP.Client {
     public func traffic(
         authentication: GitHub.HTTP.Authentication
-    ) -> GitHub.Repository.Traffic.Client<
-        GitHub.HTTP.Error<ExecutionFailure, Never>
-    > {
+    )
+        -> GitHub.Repository.Traffic.Client<
+            GitHub.HTTP.Error<ExecutionFailure, Never>
+        >
+    {
         .init(
             views: { request async throws(GitHub.HTTP.Error<ExecutionFailure, Never>) in
                 // swift-linter:disable:next raw value access
@@ -35,7 +37,8 @@ extension GitHub.HTTP.Client {
                             try .init(
                                 timestamp: Self.timestamp(element["timestamp"]),
                                 count: Self.nonnegative(
-                                    element["count"], expected: "nonnegative view count"
+                                    element["count"],
+                                    expected: "nonnegative view count"
                                 ),
                                 uniques: Self.nonnegative(
                                     element["uniques"],
@@ -47,7 +50,8 @@ extension GitHub.HTTP.Client {
                     return try .init(
                         count: Self.nonnegative(json["count"], expected: "nonnegative view count"),
                         uniques: Self.nonnegative(
-                            json["uniques"], expected: "nonnegative unique view count"
+                            json["uniques"],
+                            expected: "nonnegative unique view count"
                         ),
                         views: views
                     )
@@ -81,7 +85,8 @@ extension GitHub.HTTP.Client {
                             try .init(
                                 timestamp: Self.timestamp(element["timestamp"]),
                                 count: Self.nonnegative(
-                                    element["count"], expected: "nonnegative clone count"
+                                    element["count"],
+                                    expected: "nonnegative clone count"
                                 ),
                                 uniques: Self.nonnegative(
                                     element["uniques"],
@@ -93,7 +98,8 @@ extension GitHub.HTTP.Client {
                     return try .init(
                         count: Self.nonnegative(json["count"], expected: "nonnegative clone count"),
                         uniques: Self.nonnegative(
-                            json["uniques"], expected: "nonnegative unique clone count"
+                            json["uniques"],
+                            expected: "nonnegative unique clone count"
                         ),
                         clones: clones
                     )
@@ -125,10 +131,12 @@ extension GitHub.HTTP.Client {
                                 path: String.deserialize(element["path"]),
                                 title: String.deserialize(element["title"]),
                                 count: Self.nonnegative(
-                                    element["count"], expected: "nonnegative path count"
+                                    element["count"],
+                                    expected: "nonnegative path count"
                                 ),
                                 uniques: Self.nonnegative(
-                                    element["uniques"], expected: "nonnegative unique path count"
+                                    element["uniques"],
+                                    expected: "nonnegative unique path count"
                                 )
                             )
                         )
@@ -161,7 +169,8 @@ extension GitHub.HTTP.Client {
                             try .init(
                                 referrer: String.deserialize(element["referrer"]),
                                 count: Self.nonnegative(
-                                    element["count"], expected: "nonnegative referrer count"
+                                    element["count"],
+                                    expected: "nonnegative referrer count"
                                 ),
                                 uniques: Self.nonnegative(
                                     element["uniques"],

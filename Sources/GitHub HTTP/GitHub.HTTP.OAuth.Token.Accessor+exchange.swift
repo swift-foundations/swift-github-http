@@ -8,9 +8,11 @@ import JSON
 import RFC_3986
 
 extension GitHub.HTTP.OAuth.Token.Accessor {
-    public var exchange: GitHub.OAuth.Token.Exchange.Client<
-        GitHub.HTTP.OAuth.Error<ExecutionFailure>
-    > {
+    public var exchange:
+        GitHub.OAuth.Token.Exchange.Client<
+            GitHub.HTTP.OAuth.Error<ExecutionFailure>
+        >
+    {
         .init { request async throws(GitHub.HTTP.OAuth.Error<ExecutionFailure>) in
             let httpRequest: HTTP.Request
             do throws(GitHub.HTTP.Error<ExecutionFailure, Never>) {

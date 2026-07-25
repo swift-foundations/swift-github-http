@@ -3,9 +3,11 @@ import GitHub_Standard
 import JSON
 
 extension GitHub.HTTP.User.Authenticated.Accessor {
-    public var get: GitHub.User.Authenticated.Get.Client<
-        GitHub.HTTP.Error<ExecutionFailure, Never>
-    > {
+    public var get:
+        GitHub.User.Authenticated.Get.Client<
+            GitHub.HTTP.Error<ExecutionFailure, Never>
+        >
+    {
         .init { request async throws(GitHub.HTTP.Error<ExecutionFailure, Never>) in
             let httpRequest = try self.client.request(
                 path: ["user"],
@@ -32,13 +34,22 @@ extension GitHub.HTTP.User.Authenticated.Accessor {
                         blog: String?.deserialize(json["blog"]),
                         location: String?.deserialize(json["location"]),
                         publicRepos: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
-                            .nonnegative(json["public_repos"], expected: "nonnegative public repo count"),
+                            .nonnegative(
+                                json["public_repos"],
+                                expected: "nonnegative public repo count"
+                            ),
                         publicGists: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
-                            .nonnegative(json["public_gists"], expected: "nonnegative public gist count"),
+                            .nonnegative(
+                                json["public_gists"],
+                                expected: "nonnegative public gist count"
+                            ),
                         followers: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
                             .nonnegative(json["followers"], expected: "nonnegative follower count"),
                         following: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
-                            .nonnegative(json["following"], expected: "nonnegative following count"),
+                            .nonnegative(
+                                json["following"],
+                                expected: "nonnegative following count"
+                            ),
                         createdAt: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
                             .timestamp(json["created_at"]),
                         updatedAt: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>

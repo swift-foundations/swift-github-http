@@ -3,9 +3,11 @@ import GitHub_Standard
 import RFC_3986
 
 extension GitHub.HTTP.OAuth.Accessor {
-    public var authorization: GitHub.OAuth.Authorization.Client<
-        GitHub.HTTP.Error<Never, Never>
-    > {
+    public var authorization:
+        GitHub.OAuth.Authorization.Client<
+            GitHub.HTTP.Error<Never, Never>
+        >
+    {
         .init { request throws(GitHub.HTTP.Error<Never, Never>) in
             let scheme: RFC_3986.URI.Scheme
             do throws(RFC_3986.URI.Scheme.Error) {
@@ -26,16 +28,16 @@ extension GitHub.HTTP.OAuth.Accessor {
                 authority: .init(host: .registeredName("github.com")),
                 path: path
             )
-                .appendingQueryItem(name: "client_id", value: request.clientID)
-                .appendingQueryItem(
-                    name: "redirect_uri",
-                    value: request.redirectURI.description
-                )
-                .appendingQueryItem(
-                    name: "scope",
-                    value: request.scopes.joined(separator: " ")
-                )
-                .appendingQueryItem(name: "state", value: request.state)
+            .appendingQueryItem(name: "client_id", value: request.clientID)
+            .appendingQueryItem(
+                name: "redirect_uri",
+                value: request.redirectURI.description
+            )
+            .appendingQueryItem(
+                name: "scope",
+                value: request.scopes.joined(separator: " ")
+            )
+            .appendingQueryItem(name: "state", value: request.state)
 
             return .init(uri: uri)
         }

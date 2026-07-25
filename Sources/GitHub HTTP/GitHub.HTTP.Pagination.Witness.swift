@@ -1,5 +1,5 @@
-import HTTP_Standard
 import GitHub_Standard
+import HTTP_Standard
 
 extension GitHub.HTTP.Pagination {
     public struct Witness<Failure: Swift.Error>: Sendable {
