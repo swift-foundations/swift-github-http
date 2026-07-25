@@ -26,15 +26,20 @@ Add the package dependency:
 dependencies: [
     .package(
         url: "https://github.com/swift-foundations/swift-github-http.git",
-        branch: "main"
+        from: "0.2.0"
     )
 ]
 ```
 
-Then depend on the product:
+Then add the product to your target:
 
 ```swift
-.product(name: "GitHub HTTP", package: "swift-github-http")
+.target(
+    name: "YourTarget",
+    dependencies: [
+        .product(name: "GitHub HTTP", package: "swift-github-http")
+    ]
+)
 ```
 
 ## Usage
@@ -76,6 +81,63 @@ All package tests inject an in-memory HTTP execution closure. They make no live 
 ## Requirements
 
 - Swift 6.3+
+
+## Error Handling
+
+Every operation client throws the package's typed envelope
+`GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>`, where `ExecutionFailure`
+is the injected transport's failure type and `PaginationFailure` is the RFC 8288
+traversal failure type (`Never` for non-paginated operations):
+
+```
+GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>
+├── .execute(ExecutionFailure)          // injected transport rejected the request
+├── .header(HTTP.Header.Field.Error)    // request header construction failed
+├── .json(JSON.Error)                   // response body decoding failed
+├── .pagination(PaginationFailure)      // RFC 8288 Link traversal failed
+├── .path(RFC_3986.URI.Path.Error)      // request path construction failed
+├── .query(RFC_3986.URI.Query.Error)    // request query construction failed
+├── .scheme(RFC_3986.URI.Scheme.Error)  // request scheme construction failed
+└── .status(HTTP.Status)                // GitHub returned a non-success status
+```
+
+Because the envelope is a typed throw, a paginated call such as
+`stargazers(_:).page(_:)` matches every arm exhaustively:
+
+```swift
+do {
+    let page = try await http.stargazers(authentication: .token(token)).page(
+        .init(
+            owner: .init(rawValue: "swiftlang"),
+            repository: .init(rawValue: "swift"),
+            page: .first,
+            size: .maximum
+        )
+    )
+    _ = page.response.stargazers
+} catch .execute(let failure) {
+    // injected transport rejected the request
+} catch .header(let error) {
+    // request header construction failed
+} catch .json(let error) {
+    // response body decoding failed
+} catch .pagination(let error) {
+    // RFC 8288 Link traversal failed
+} catch .path(let error) {
+    // request path construction failed
+} catch .query(let error) {
+    // request query construction failed
+} catch .scheme(let error) {
+    // request scheme construction failed
+} catch .status(let status) {
+    // GitHub returned a non-success HTTP status
+}
+```
+
+The `.pagination` payload is `GitHub.HTTP.Pagination.Error` (`.link`, `.next`,
+`.page`) for the stargazer and repository traversals, and OAuth token exchange
+(`client.oauth.token.exchange`) throws `GitHub.HTTP.OAuth.Error`, which wraps this
+envelope in its `.http` case alongside a `.provider` case for exchange failures.
 
 ## License
 
