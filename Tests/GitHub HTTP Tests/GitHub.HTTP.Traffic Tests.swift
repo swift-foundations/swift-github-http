@@ -10,9 +10,9 @@ extension GitHub.HTTP {
                 agent: .init(rawValue: "traffic-tests"),
                 version: .init(rawValue: "2026-03-10"),
                 execute: { request async throws(Fixture.Execution) in
-                    // swift-linter:disable:next raw value access
-                    // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                     #expect(
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-shape assertion; raw form compared to wire literal
                         request.headers.first("Accept")?.rawValue == "application/vnd.github+json"
                     )
                     // swift-linter:disable:next raw value access

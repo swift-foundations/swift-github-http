@@ -36,13 +36,19 @@ extension GitHub.HTTP.Client {
                     try .init(name: "Accept", value: "application/vnd.github+json")
                 )
                 headers.append(
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-format extraction; raw agent string is the header value
                     try .init(name: "User-Agent", value: self.agent.rawValue)
                 )
                 headers.append(
+                    // swift-linter:disable:next raw value access
+                    // REASON: wire-format extraction; raw version string is the header value
                     try .init(name: "X-GitHub-Api-Version", value: self.version.rawValue)
                 )
                 if case .token(let token) = authentication {
                     headers.append(
+                        // swift-linter:disable:next raw value access
+                        // REASON: wire-format extraction; raw token string is the bearer value
                         try .init(name: "Authorization", value: "Bearer \(token.rawValue)")
                     )
                 }

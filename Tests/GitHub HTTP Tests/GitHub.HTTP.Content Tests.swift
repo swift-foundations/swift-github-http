@@ -12,13 +12,21 @@ extension GitHub.HTTP {
                 execute: { request async throws(Fixture.Failure) in
                     #expect(request.method == .get)
                     #expect(
+                        // swift-linter:disable:next raw value access
+                        // REASON: test asserts the raw wire string of the request target
                         request.target.rawValue
                             == "https://api.github.com/repos/swift-foundations/swift-github/contents/Package.swift"
                     )
                     #expect(
+                        // swift-linter:disable:next raw value access
+                        // REASON: test asserts the raw wire string of the Accept header
                         request.headers.first("Accept")?.rawValue == "application/vnd.github+json"
                     )
+                    // swift-linter:disable:next raw value access
+                    // REASON: test asserts the raw wire string of the User-Agent header
                     #expect(request.headers.first("User-Agent")?.rawValue == "workspace-tests")
+                    // swift-linter:disable:next raw value access
+                    // REASON: test asserts the raw wire string of the API-version header
                     #expect(request.headers.first("X-GitHub-Api-Version")?.rawValue == "2026-03-10")
                     #expect(request.headers.first("Authorization") == nil)
                     return .init(status: .ok, body: Self.bytes(#"{"type":"file"}"#))
