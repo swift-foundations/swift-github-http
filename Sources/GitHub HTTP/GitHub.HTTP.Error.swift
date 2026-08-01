@@ -5,8 +5,8 @@ import RFC_3986
 extension GitHub.HTTP {
     public enum Error<ExecutionFailure, PaginationFailure>: Swift.Error, Sendable
     where
-        ExecutionFailure: Swift.Error & Sendable,
-        PaginationFailure: Swift.Error & Sendable
+        ExecutionFailure: Swift.Error,
+        PaginationFailure: Swift.Error
     {
         case execute(ExecutionFailure)
         case header(HTTP.Header.Field.Error)

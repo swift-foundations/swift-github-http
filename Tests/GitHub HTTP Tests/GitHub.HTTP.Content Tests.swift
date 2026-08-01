@@ -6,10 +6,10 @@ extension GitHub.HTTP {
     struct Content {
         @Test("Package.swift content maps through the provider endpoint")
         func present() async throws {
-            let client = GitHub.HTTP.Client<Fixture.Failure, Never>(
+            let client = GitHub.HTTP.Client<Failure, Never>(
                 agent: .init(rawValue: "workspace-tests"),
                 version: .init(rawValue: "2026-03-10"),
-                execute: { request async throws(Fixture.Failure) in
+                execute: { request async throws(Failure) in
                     #expect(request.method == .get)
                     #expect(
                         // swift-linter:disable:next raw value access
@@ -42,10 +42,10 @@ extension GitHub.HTTP {
 
         @Test("A 404 means the package manifest is absent")
         func absent() async throws {
-            let client = GitHub.HTTP.Client<Fixture.Failure, Never>(
+            let client = GitHub.HTTP.Client<Failure, Never>(
                 agent: .init(rawValue: "workspace-tests"),
                 version: .init(rawValue: "2026-03-10"),
-                execute: { _ async throws(Fixture.Failure) in .init(status: .notFound) },
+                execute: { _ async throws(Failure) in .init(status: .notFound) },
                 pagination: .none
             )
 
@@ -56,21 +56,21 @@ extension GitHub.HTTP {
 
         @Test("Unknown content kinds remain typed JSON failures")
         func kind() async throws {
-            let client = GitHub.HTTP.Client<Fixture.Failure, Never>(
+            let client = GitHub.HTTP.Client<Failure, Never>(
                 agent: .init(rawValue: "workspace-tests"),
                 version: .init(rawValue: "2026-03-10"),
-                execute: { _ async throws(Fixture.Failure) in
+                execute: { _ async throws(Failure) in
                     .init(status: .ok, body: Self.bytes(#"{"type":"unknown"}"#))
                 },
                 pagination: .none
             )
 
-            await #expect(throws: GitHub.HTTP.Error<Fixture.Failure, Never>.self) {
+            await #expect(throws: GitHub.HTTP.Error<Failure, Never>.self) {
                 try await client.content(authentication: .none).get(try Self.request())
             }
         }
 
-        private static func request() throws(Fixture.Failure) -> GitHub.Repository.Content.Request {
+        private static func request() throws(Failure) -> GitHub.Repository.Content.Request {
             guard let path = GitHub.Repository.Content.Path(segments: ["Package.swift"])
             else { throw .unexpected }
             return .init(
@@ -84,10 +84,8 @@ extension GitHub.HTTP {
             string.utf8.map(Byte.init)
         }
 
-        enum Fixture {
-            enum Failure: Swift.Error, Sendable {
-                case unexpected
-            }
+        enum Failure: Swift.Error, Sendable {
+            case unexpected
         }
     }
 }

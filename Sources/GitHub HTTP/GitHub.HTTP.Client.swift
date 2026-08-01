@@ -4,8 +4,8 @@ import HTTP_Standard
 extension GitHub.HTTP {
     public struct Client<ExecutionFailure, PaginationFailure>: Sendable
     where
-        ExecutionFailure: Swift.Error & Sendable,
-        PaginationFailure: Swift.Error & Sendable
+        ExecutionFailure: Swift.Error,
+        PaginationFailure: Swift.Error
     {
         public let agent: Agent
         public let version: Version
