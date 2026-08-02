@@ -6,12 +6,13 @@ import JSON
 extension GitHub.HTTP.User.Accessor {
     public func repositories(
         authentication: GitHub.HTTP.Authentication
-    )
-        -> GitHub.User.Repositories.Client<
-            GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>
-        >
-    {
-        .init { request async throws(GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>) in
+    ) -> GitHub.User.Repositories.Client {
+        .init {
+            (
+                request: GitHub.User.Repositories.Request
+            ) async throws(Either<
+                Async.Lifecycle.Error, GitHub.User.Repositories.Page.Error
+            >) -> GitHub.User.Repositories.Page in
             var parameters: [(String, String?)] = []
             if let visibility = request.visibility {
                 // swift-linter:disable:next raw value access
@@ -65,14 +66,26 @@ extension GitHub.HTTP.User.Accessor {
                     authentication: authentication
                 )
             } catch {
-                throw error.widening()
+                throw .right(.transport)
             }
 
             let httpResponse: HTTP.Response
             do throws(GitHub.HTTP.Error<ExecutionFailure, Never>) {
                 httpResponse = try await self.client.response(for: httpRequest)
             } catch {
-                throw error.widening()
+                if case .execute = error {
+                    throw .right(.transport)
+                }
+                if case .status(let status) = error, status == .unauthorized {
+                    throw .right(.authentication)
+                }
+                if case .status(let status) = error, status == .forbidden {
+                    throw .right(.forbidden)
+                }
+                if case .status(let status) = error, status == .unprocessableContent {
+                    throw .right(.rejected)
+                }
+                throw .right(.malformedResponse)
             }
 
             let response: GitHub.User.Repositories.Response
@@ -88,14 +101,14 @@ extension GitHub.HTTP.User.Accessor {
                 }
                 response = .init(repositories: repositories)
             } catch {
-                throw .json(error)
+                throw .right(.malformedResponse)
             }
 
             let nextPage: GitHub.Page.Number?
             do throws(PaginationFailure) {
                 nextPage = try self.client.pagination.next(httpResponse.headers)
             } catch {
-                throw .pagination(error)
+                throw .right(.malformedResponse)
             }
 
             return .init(

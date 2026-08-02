@@ -62,5 +62,44 @@ extension GitHub.HTTP {
             #expect(page.next?.page?.rawValue == 2)
             #expect(page.next?.size == .maximum)
         }
+
+        @Test
+        func `Stargazers map rejected and malformed responses to distinct C5 leaves`() async {
+            await #expect(
+                throws:
+                    Either<Async.Lifecycle.Error, GitHub.Repository.Stargazers.Page.Error>
+                    .right(.rejected)
+            ) {
+                try await Self.client(status: .unprocessableContent).page(Self.request)
+            }
+            await #expect(
+                throws:
+                    Either<Async.Lifecycle.Error, GitHub.Repository.Stargazers.Page.Error>
+                    .right(.malformedResponse)
+            ) {
+                try await Self.client(status: .ok, body: "{}").page(Self.request)
+            }
+        }
+
+        private static let request = GitHub.Repository.Stargazers.Request(
+            owner: .init("swiftlang"),
+            repository: .init("swift"),
+            page: .first,
+            size: .maximum
+        )
+
+        private static func client(
+            status: HTTP.Status,
+            body: String = "[]"
+        ) -> GitHub.Repository.Stargazers.Client {
+            GitHub.HTTP.Client<Fixture.Execution, Never>(
+                agent: .init(rawValue: "stargazer-tests"),
+                version: .init(rawValue: "2026-03-10"),
+                execute: { _ async throws(Fixture.Execution) in
+                    .init(status: status, body: Fixture.bytes(body))
+                },
+                pagination: .none
+            ).stargazers(authentication: .none)
+        }
     }
 }

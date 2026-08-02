@@ -6,12 +6,13 @@ import JSON
 extension GitHub.HTTP.Client {
     public func stargazers(
         authentication: GitHub.HTTP.Authentication
-    )
-        -> GitHub.Repository.Stargazers.Client<
-            GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>
-        >
-    {
-        .init { request async throws(GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>) in
+    ) -> GitHub.Repository.Stargazers.Client {
+        .init {
+            (
+                request: GitHub.Repository.Stargazers.Request
+            ) async throws(Either<
+                Async.Lifecycle.Error, GitHub.Repository.Stargazers.Page.Error
+            >) -> GitHub.Repository.Stargazers.Page in
             var parameters: [(String, String?)] = []
             if let size = request.size {
                 // swift-linter:disable:next raw value access
@@ -38,14 +39,20 @@ extension GitHub.HTTP.Client {
                     authentication: authentication
                 )
             } catch {
-                throw error.widening()
+                throw .right(.transport)
             }
 
             let httpResponse: HTTP.Response
             do throws(GitHub.HTTP.Error<ExecutionFailure, Never>) {
                 httpResponse = try await self.response(for: httpRequest)
             } catch {
-                throw error.widening()
+                if case .execute = error {
+                    throw .right(.transport)
+                }
+                if case .status(let status) = error, status == .unprocessableContent {
+                    throw .right(.rejected)
+                }
+                throw .right(.malformedResponse)
             }
 
             let response: GitHub.Repository.Stargazers.Response
@@ -63,14 +70,14 @@ extension GitHub.HTTP.Client {
                 }
                 response = .init(stargazers: stargazers)
             } catch {
-                throw .json(error)
+                throw .right(.malformedResponse)
             }
 
             let nextPage: GitHub.Page.Number?
             do throws(PaginationFailure) {
                 nextPage = try self.pagination.next(httpResponse.headers)
             } catch {
-                throw .pagination(error)
+                throw .right(.malformedResponse)
             }
 
             return .init(
