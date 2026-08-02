@@ -9,7 +9,9 @@ extension GitHub.HTTP.Client {
         authentication: GitHub.HTTP.Authentication
     ) -> GitHub.Organization.Repositories.Client {
         .init {
-            (request: GitHub.Organization.Repositories.Request) async throws(Either<
+            (
+                request: GitHub.Organization.Repositories.Request
+            ) async throws(Either<
                 Async.Lifecycle.Error, GitHub.Organization.Repositories.Page.Error
             >) -> GitHub.Organization.Repositories.Page in
             let path: RFC_3986.URI.Path

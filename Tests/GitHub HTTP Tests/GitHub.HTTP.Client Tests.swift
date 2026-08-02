@@ -87,7 +87,8 @@ extension GitHub.HTTP {
         }
 
         @Test
-        func `Organization repositories map transport and malformed responses to C5 leaves`() async {
+        func `Organization repositories map transport and malformed responses to C5 leaves`() async
+        {
             let transport = GitHub.HTTP.Client<Fixture.Execution, Never>(
                 agent: .init(rawValue: "swift-institute"),
                 version: .init(rawValue: "2026-03-10"),

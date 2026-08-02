@@ -8,7 +8,9 @@ extension GitHub.HTTP.User.Accessor {
         authentication: GitHub.HTTP.Authentication
     ) -> GitHub.User.Repositories.Client {
         .init {
-            (request: GitHub.User.Repositories.Request) async throws(Either<
+            (
+                request: GitHub.User.Repositories.Request
+            ) async throws(Either<
                 Async.Lifecycle.Error, GitHub.User.Repositories.Page.Error
             >) -> GitHub.User.Repositories.Page in
             var parameters: [(String, String?)] = []

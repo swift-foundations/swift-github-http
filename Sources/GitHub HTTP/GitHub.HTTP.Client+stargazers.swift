@@ -8,7 +8,9 @@ extension GitHub.HTTP.Client {
         authentication: GitHub.HTTP.Authentication
     ) -> GitHub.Repository.Stargazers.Client {
         .init {
-            (request: GitHub.Repository.Stargazers.Request) async throws(Either<
+            (
+                request: GitHub.Repository.Stargazers.Request
+            ) async throws(Either<
                 Async.Lifecycle.Error, GitHub.Repository.Stargazers.Page.Error
             >) -> GitHub.Repository.Stargazers.Page in
             var parameters: [(String, String?)] = []
