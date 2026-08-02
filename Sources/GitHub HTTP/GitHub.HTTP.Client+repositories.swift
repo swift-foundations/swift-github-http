@@ -7,12 +7,11 @@ import RFC_3986
 extension GitHub.HTTP.Client {
     public func repositories(
         authentication: GitHub.HTTP.Authentication
-    )
-        -> GitHub.Organization.Repositories.Client<
-            GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>
-        >
-    {
-        .init { request async throws(GitHub.HTTP.Error<ExecutionFailure, PaginationFailure>) in
+    ) -> GitHub.Organization.Repositories.Client {
+        .init {
+            (request: GitHub.Organization.Repositories.Request) async throws(Either<
+                Async.Lifecycle.Error, GitHub.Organization.Repositories.Page.Error
+            >) -> GitHub.Organization.Repositories.Page in
             let path: RFC_3986.URI.Path
             do throws(RFC_3986.URI.Path.Error) {
                 path = try .init(
@@ -21,7 +20,7 @@ extension GitHub.HTTP.Client {
                     segments: ["orgs", request.organization.underlying, "repos"]
                 )
             } catch {
-                throw .path(error)
+                throw .right(.transport)
             }
 
             let query: RFC_3986.URI.Query
@@ -38,14 +37,14 @@ extension GitHub.HTTP.Client {
                     ("page", String(request.page.rawValue)),
                 ])
             } catch {
-                throw .query(error)
+                throw .right(.transport)
             }
 
             let scheme: RFC_3986.URI.Scheme
             do throws(RFC_3986.URI.Scheme.Error) {
                 scheme = try .init("https")
             } catch {
-                throw .scheme(error)
+                throw .right(.transport)
             }
 
             var headers = HTTP.Headers()
@@ -71,7 +70,7 @@ extension GitHub.HTTP.Client {
                     )
                 }
             } catch {
-                throw .header(error)
+                throw .right(.transport)
             }
 
             let uri = RFC_3986.URI(
@@ -90,25 +89,25 @@ extension GitHub.HTTP.Client {
             do throws(ExecutionFailure) {
                 httpResponse = try await self.execute(httpRequest)
             } catch {
-                throw .execute(error)
+                throw .right(.transport)
             }
 
             guard httpResponse.status.isSuccessful else {
-                throw .status(httpResponse.status)
+                throw .right(.malformedResponse)
             }
 
             let response: GitHub.Organization.Repositories.Response
             do throws(JSON.Error) {
                 response = try Self.response(from: httpResponse.body ?? [])
             } catch {
-                throw .json(error)
+                throw .right(.malformedResponse)
             }
 
             let nextPage: GitHub.Page.Number?
             do throws(PaginationFailure) {
                 nextPage = try self.pagination.next(httpResponse.headers)
             } catch {
-                throw .pagination(error)
+                throw .right(.malformedResponse)
             }
 
             let next = nextPage.map {

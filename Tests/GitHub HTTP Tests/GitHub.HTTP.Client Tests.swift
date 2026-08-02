@@ -86,6 +86,39 @@ extension GitHub.HTTP {
             _ = try await client.page(Self.request)
         }
 
+        @Test
+        func `Organization repositories map transport and malformed responses to C5 leaves`() async {
+            let transport = GitHub.HTTP.Client<Fixture.Execution, Never>(
+                agent: .init(rawValue: "swift-institute"),
+                version: .init(rawValue: "2026-03-10"),
+                execute: { _ async throws(Fixture.Execution) in throw .unexpected },
+                pagination: .none
+            ).repositories(authentication: .none)
+            await #expect(
+                throws:
+                    Either<Async.Lifecycle.Error, GitHub.Organization.Repositories.Page.Error>
+                    .right(.transport)
+            ) {
+                try await transport.page(Self.request)
+            }
+
+            let malformed = GitHub.HTTP.Client<Fixture.Execution, Never>(
+                agent: .init(rawValue: "swift-institute"),
+                version: .init(rawValue: "2026-03-10"),
+                execute: { _ async throws(Fixture.Execution) in
+                    .init(status: .internalServerError)
+                },
+                pagination: .none
+            ).repositories(authentication: .none)
+            await #expect(
+                throws:
+                    Either<Async.Lifecycle.Error, GitHub.Organization.Repositories.Page.Error>
+                    .right(.malformedResponse)
+            ) {
+                try await malformed.page(Self.request)
+            }
+        }
+
         private static let request = GitHub.Organization.Repositories.Request(
             organization: .init("swiftlang"),
             type: .public,

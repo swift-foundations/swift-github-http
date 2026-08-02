@@ -60,5 +60,55 @@ extension GitHub.HTTP.User {
             #expect(page.next?.page?.rawValue == 3)
             #expect(page.next?.size == .maximum)
         }
+
+        @Test
+        func `Authenticated-user repositories preserve the ruled HTTP status distinctions`() async {
+            await #expect(
+                throws:
+                    Either<Async.Lifecycle.Error, GitHub.User.Repositories.Page.Error>
+                    .right(.authentication)
+            ) {
+                try await Self.client(status: .unauthorized).page(Self.request)
+            }
+            await #expect(
+                throws:
+                    Either<Async.Lifecycle.Error, GitHub.User.Repositories.Page.Error>
+                    .right(.forbidden)
+            ) {
+                try await Self.client(status: .forbidden).page(Self.request)
+            }
+            await #expect(
+                throws:
+                    Either<Async.Lifecycle.Error, GitHub.User.Repositories.Page.Error>
+                    .right(.rejected)
+            ) {
+                try await Self.client(status: .unprocessableContent).page(Self.request)
+            }
+            await #expect(
+                throws:
+                    Either<Async.Lifecycle.Error, GitHub.User.Repositories.Page.Error>
+                    .right(.malformedResponse)
+            ) {
+                try await Self.client(status: .internalServerError).page(Self.request)
+            }
+        }
+
+        private static let request = GitHub.User.Repositories.Request(
+            page: .first,
+            size: .maximum
+        )
+
+        private static func client(
+            status: HTTP.Status
+        ) -> GitHub.User.Repositories.Client {
+            GitHub.HTTP.Client<GitHub.HTTP.Fixture.Execution, Never>(
+                agent: .init(rawValue: "user-repository-tests"),
+                version: .init(rawValue: "2026-03-10"),
+                execute: { _ async throws(GitHub.HTTP.Fixture.Execution) in
+                    .init(status: status)
+                },
+                pagination: .none
+            ).user.repositories(authentication: .none)
+        }
     }
 }
