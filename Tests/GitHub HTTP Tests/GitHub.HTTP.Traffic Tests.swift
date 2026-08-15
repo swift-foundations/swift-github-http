@@ -25,6 +25,7 @@ extension GitHub.HTTP {
                                 #"{"count":12,"uniques":8,"views":[{"timestamp":"2026-07-21T00:00:00Z","count":5,"uniques":4}]}"#
                             )
                         )
+
                     case "https://api.github.com/repos/swiftlang/swift/traffic/clones?per=week":
                         return .init(
                             status: .ok,
@@ -32,6 +33,7 @@ extension GitHub.HTTP {
                                 #"{"count":6,"uniques":3,"clones":[{"timestamp":"2026-07-21T00:00:00Z","count":2,"uniques":1}]}"#
                             )
                         )
+
                     case "https://api.github.com/repos/swiftlang/swift/traffic/popular/paths":
                         return .init(
                             status: .ok,
@@ -39,6 +41,7 @@ extension GitHub.HTTP {
                                 #"[{"path":"/swiftlang/swift","title":"swift","count":10,"uniques":7}]"#
                             )
                         )
+
                     case "https://api.github.com/repos/swiftlang/swift/traffic/popular/referrers":
                         return .init(
                             status: .ok,
@@ -46,6 +49,7 @@ extension GitHub.HTTP {
                                 #"[{"referrer":"github.com","count":9,"uniques":6}]"#
                             )
                         )
+
                     default:
                         throw .unexpected
                     }
