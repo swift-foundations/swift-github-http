@@ -5,9 +5,5 @@ extension GitHub.HTTP.OAuth.Token {
         PaginationFailure: Swift.Error
     {
         let client: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>
-
-        init(client: GitHub.HTTP.Client<ExecutionFailure, PaginationFailure>) {
-            self.client = client
-        }
     }
 }
