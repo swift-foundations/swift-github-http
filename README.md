@@ -139,6 +139,18 @@ The `.pagination` payload is `GitHub.HTTP.Pagination.Error` (`.link`, `.next`,
 (`client.oauth.token.exchange`) throws `GitHub.HTTP.OAuth.Error`, which wraps this
 envelope in its `.http` case alongside a `.provider` case for exchange failures.
 
+## Test Environment
+
+The live integration tests read their configuration from the process environment.
+Set these before running them; the offline suites need none of them.
+
+| Variable | Meaning |
+|---|---|
+| `GITHUB_TOKEN` | Personal access token used to authenticate the live requests. |
+| `GITHUB_BASE_URL` | API origin. Defaults to `https://api.github.com`. |
+| `GITHUB_TEST_OWNER` | Owner (user or organization) the live tests read from. |
+| `GITHUB_TEST_REPO` | Repository under that owner the live tests read from. |
+
 ## License
 
 This package is licensed under the AGPL 3.0 License. See [LICENSE.md](LICENSE.md) for details.
