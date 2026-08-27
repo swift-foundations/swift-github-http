@@ -1,6 +1,6 @@
 # swift-github-http
 
-[![CI](https://github.com/swift-foundations/swift-github-http/actions/workflows/ci.yml/badge.svg)](https://github.com/swift-foundations/swift-github-http/actions/workflows/ci.yml)
+[![CI](https://github.com/swift-compositions/swift-github-http/actions/workflows/ci.yml/badge.svg)](https://github.com/swift-compositions/swift-github-http/actions/workflows/ci.yml)
 ![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
 
 HTTP bindings for the typed GitHub operations published by `swift-github`.
@@ -25,7 +25,7 @@ Add the package dependency:
 ```swift
 dependencies: [
     .package(
-        url: "https://github.com/swift-foundations/swift-github-http.git",
+        url: "https://github.com/swift-compositions/swift-github-http.git",
         from: "0.2.0"
     )
 ]

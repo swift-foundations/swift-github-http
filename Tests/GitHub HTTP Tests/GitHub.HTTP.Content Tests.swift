@@ -15,7 +15,7 @@ extension GitHub.HTTP {
                         // swift-linter:disable:next raw value access
                         // REASON: test asserts the raw wire string of the request target
                         request.target.rawValue
-                            == "https://api.github.com/repos/swift-foundations/swift-github/contents/Package.swift"
+                            == "https://api.github.com/repos/swift-compositions/swift-github/contents/Package.swift"
                     )
                     #expect(
                         // swift-linter:disable:next raw value access
@@ -74,7 +74,7 @@ extension GitHub.HTTP {
             guard let path = GitHub.Repository.Content.Path(segments: ["Package.swift"])
             else { throw .unexpected }
             return .init(
-                organization: .init("swift-foundations"),
+                organization: .init("swift-compositions"),
                 repository: .init("swift-github"),
                 path: path
             )

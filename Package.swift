@@ -19,18 +19,18 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-foundations/swift-github.git",
+            url: "https://github.com/swift-compositions/swift-github.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-foundations/swift-html-form-coder.git",
+            url: "https://github.com/swift-compositions/swift-html-form-coder.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-foundations/swift-http-body.git",
+            url: "https://github.com/swift-compositions/swift-http-body.git",
             branch: "main"
         ),
-        .package(url: "https://github.com/swift-foundations/swift-json.git", branch: "main"),
+        .package(url: "https://github.com/swift-compositions/swift-json.git", branch: "main"),
         .package(url: "https://github.com/swift-ietf/swift-rfc-3986.git", branch: "main"),
         .package(url: "https://github.com/swift-ietf/swift-rfc-8288.git", branch: "main"),
         .package(
