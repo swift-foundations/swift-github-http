@@ -3,6 +3,7 @@ import GitHub_Standard
 import HTTP_Standard
 import JSON
 import RFC_3986
+import RFC_3986_Coder
 
 extension GitHub.HTTP.Client {
     public func repositories(

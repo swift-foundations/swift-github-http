@@ -6,6 +6,7 @@ import HTTP_Body
 import HTTP_Standard
 import JSON
 import RFC_3986
+import RFC_3986_Coder
 
 extension GitHub.HTTP.OAuth.Token.Accessor {
     public var exchange:

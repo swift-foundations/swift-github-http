@@ -1,6 +1,7 @@
 import GitHub
 import GitHub_Standard
 import RFC_3986
+import RFC_3986_Coder
 
 extension GitHub.HTTP.OAuth.Accessor {
     public var authorization:
