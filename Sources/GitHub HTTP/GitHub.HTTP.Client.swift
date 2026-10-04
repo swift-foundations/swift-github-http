@@ -1,5 +1,7 @@
 import GitHub
-import HTTP_Standard
+import HTTP
+import HTTP_Router
+import RFC_9110
 
 extension GitHub.HTTP {
     public struct Client<ExecutionFailure, PaginationFailure>: Sendable
@@ -9,14 +11,14 @@ extension GitHub.HTTP {
     {
         public let agent: Agent
         public let version: Version
-        public var execute: @Sendable (HTTP.Request) async throws(ExecutionFailure) -> HTTP.Response
+        public var execute: @Sendable (HTTP.Router.Request) async throws(ExecutionFailure) -> HTTP.Router.Response
         public var pagination: Pagination.Witness<PaginationFailure>
 
         public init(
             agent: Agent,
             version: Version,
             execute:
-                @escaping @Sendable (HTTP.Request) async throws(ExecutionFailure) -> HTTP.Response,
+                @escaping @Sendable (HTTP.Router.Request) async throws(ExecutionFailure) -> HTTP.Router.Response,
             pagination: Pagination.Witness<PaginationFailure>
         ) {
             self.agent = agent

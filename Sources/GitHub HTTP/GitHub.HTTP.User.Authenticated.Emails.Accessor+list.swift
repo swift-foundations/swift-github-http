@@ -16,7 +16,7 @@ extension GitHub.HTTP.User.Authenticated.Emails.Accessor {
             let httpResponse = try await self.client.response(for: httpRequest)
 
             do throws(JSON.Error) {
-                let elements = try [JSON].deserialize(JSON.parse(httpResponse.body ?? []))
+                let elements = try [JSON].deserialize(JSON.parse(httpResponse.content ?? []))
                 var emails: [GitHub.User.Authenticated.Emails.List.Email] = []
                 emails.reserveCapacity(elements.count)
                 for element in elements {

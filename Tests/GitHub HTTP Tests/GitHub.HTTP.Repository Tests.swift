@@ -16,7 +16,7 @@ extension GitHub.HTTP {
                         request.target.rawValue
                             == "https://api.github.com/repos/swiftlang/swift"
                     )
-                    return .init(status: .ok, body: Fixture.bytes(Fixture.metadata))
+                    return .init(status: .ok, content: Fixture.bytes(Fixture.metadata))
                 },
                 pagination: .none
             )

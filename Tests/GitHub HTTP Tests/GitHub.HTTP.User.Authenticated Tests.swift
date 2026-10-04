@@ -18,7 +18,7 @@ extension GitHub.HTTP.User.Authenticated {
                     #expect(request.headers.first("Authorization")?.rawValue == "Bearer token")
                     return .init(
                         status: .ok,
-                        body: GitHub.HTTP.Fixture.bytes(
+                        content: GitHub.HTTP.Fixture.bytes(
                             #"{"id":9,"login":"octocat","name":"The Octocat","email":null,"avatar_url":"https://avatars.githubusercontent.com/u/9","bio":null,"company":"@github","blog":"https://github.blog","location":"San Francisco","public_repos":8,"public_gists":8,"followers":100,"following":0,"created_at":"2020-01-01T00:00:00Z","updated_at":"2026-07-22T00:00:00Z"}"#
                         )
                     )
@@ -50,7 +50,7 @@ extension GitHub.HTTP.User.Authenticated {
                     #expect(request.headers.first("Authorization")?.rawValue == "Bearer token")
                     return .init(
                         status: .ok,
-                        body: GitHub.HTTP.Fixture.bytes(
+                        content: GitHub.HTTP.Fixture.bytes(
                             #"[{"email":"octocat@github.com","primary":true,"verified":true,"visibility":"public"}]"#
                         )
                     )

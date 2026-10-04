@@ -1,3 +1,4 @@
+import Byte
 @testable import GitHub_HTTP
 
 extension GitHub.HTTP {
@@ -20,6 +21,6 @@ extension GitHub.HTTP.Fixture {
         #"{"id":9,"login":"octocat","node_id":"U_9","avatar_url":"https://avatars.githubusercontent.com/u/9","gravatar_id":"","url":"https://api.github.com/users/octocat","html_url":"https://github.com/octocat","type":"User","site_admin":false}"#
 
     static func bytes(_ string: String) -> [Byte] {
-        string.utf8.map(Byte.init)
+        string.utf8.map(Byte.init(bitPattern:))
     }
 }

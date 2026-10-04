@@ -1,4 +1,7 @@
 import GitHub_HTTP
+import HTTP
+import HTTP_Router
+import RFC_9110
 import Testing
 
 extension GitHub.HTTP.Pagination {
@@ -49,7 +52,7 @@ extension GitHub.HTTP.Pagination {
 
         private let witness = GitHub.HTTP.Pagination.Witness<GitHub.HTTP.Pagination.Error>.link
 
-        private func headers(_ value: String) throws -> HTTP.Headers {
+        private func headers(_ value: String) throws -> RFC_9110.Message.Headers {
             try .init([.init(name: "Link", value: value)])
         }
     }

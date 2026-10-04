@@ -1,6 +1,8 @@
 import GitHub
 import GitHub_Standard
-import HTTP_Standard
+import HTTP
+import HTTP_Router
+import RFC_9110
 import JSON
 
 extension GitHub.HTTP.User.Accessor {
@@ -58,7 +60,7 @@ extension GitHub.HTTP.User.Accessor {
                 parameters.append(("before", before.rawValue))
             }
 
-            let httpRequest: HTTP.Request
+            let httpRequest: HTTP.Router.Request
             do throws(GitHub.HTTP.Error<ExecutionFailure, Never>) {
                 httpRequest = try self.client.request(
                     path: ["user", "repos"],
@@ -69,7 +71,7 @@ extension GitHub.HTTP.User.Accessor {
                 throw .right(.transport)
             }
 
-            let httpResponse: HTTP.Response
+            let httpResponse: HTTP.Router.Response
             do throws(GitHub.HTTP.Error<ExecutionFailure, Never>) {
                 httpResponse = try await self.client.response(for: httpRequest)
             } catch {
@@ -90,7 +92,7 @@ extension GitHub.HTTP.User.Accessor {
 
             let response: GitHub.User.Repositories.Response
             do throws(JSON.Error) {
-                let elements = try [JSON].deserialize(JSON.parse(httpResponse.body ?? []))
+                let elements = try [JSON].deserialize(JSON.parse(httpResponse.content ?? []))
                 var repositories: [GitHub.Repository.Metadata] = []
                 repositories.reserveCapacity(elements.count)
                 for element in elements {

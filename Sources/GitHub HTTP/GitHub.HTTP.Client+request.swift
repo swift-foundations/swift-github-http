@@ -1,5 +1,7 @@
 import GitHub
-import HTTP_Standard
+import HTTP
+import HTTP_Router
+import RFC_9110
 import RFC_3986
 import RFC_3986_Coder
 
@@ -9,7 +11,7 @@ extension GitHub.HTTP.Client {
         query parameters: [(String, String?)] = [],
         accept: String = "application/vnd.github+json",
         authentication: GitHub.HTTP.Authentication
-    ) throws(GitHub.HTTP.Error<ExecutionFailure, Never>) -> HTTP.Request {
+    ) throws(GitHub.HTTP.Error<ExecutionFailure, Never>) -> HTTP.Router.Request {
         let path: RFC_3986.URI.Path
         do throws(RFC_3986.URI.Path.Error) {
             path = try .init(segments: segments)
@@ -31,8 +33,8 @@ extension GitHub.HTTP.Client {
             throw .scheme(error)
         }
 
-        var headers = HTTP.Headers()
-        do throws(HTTP.Header.Field.Error) {
+        var headers = RFC_9110.Message.Headers()
+        do throws(RFC_9110.Field.Error) {
             headers.append(try .init(name: "Accept", value: accept))
             // swift-linter:disable:next raw value access
             // REASON: wire-boundary extraction into HTTP request/response components (GitHub HTTP adapter; ruling class 3, [PATTERN-017] boundary use).
@@ -59,6 +61,6 @@ extension GitHub.HTTP.Client {
             path: path,
             query: query
         )
-        return .init(method: .get, target: .absolute(uri), headers: headers)
+        return .init(method: .get, target: .resource(uri), headers: headers)
     }
 }

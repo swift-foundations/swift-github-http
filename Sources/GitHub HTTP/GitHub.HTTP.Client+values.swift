@@ -4,12 +4,13 @@ import GitHub_Standard
 import JSON
 import RFC_3339
 import RFC_3986
+import RFC_6531
 
 extension GitHub.HTTP.Client {
     static func email(_ json: JSON) throws(JSON.Error) -> EmailAddress {
         let raw = try String.deserialize(json)
-        do throws(EmailAddress.Error) {
-            return try .init(raw)
+        do throws(RFC_6531.Mailbox.Error) {
+            return EmailAddress(rfc6531: try RFC_6531.Mailbox(raw))
         } catch {
             throw .typeMismatch(expected: "email address", got: raw)
         }
@@ -17,8 +18,8 @@ extension GitHub.HTTP.Client {
 
     static func email(ifPresent json: JSON) throws(JSON.Error) -> EmailAddress? {
         guard let raw = try String?.deserialize(json) else { return nil }
-        do throws(EmailAddress.Error) {
-            return try .init(raw)
+        do throws(RFC_6531.Mailbox.Error) {
+            return EmailAddress(rfc6531: try RFC_6531.Mailbox(raw))
         } catch {
             throw .typeMismatch(expected: "email address or null", got: raw)
         }

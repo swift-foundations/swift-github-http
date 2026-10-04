@@ -1,6 +1,8 @@
 import GitHub
 import GitHub_Standard
-import HTTP_Standard
+import HTTP
+import HTTP_Router
+import RFC_9110
 import JSON
 import RFC_3986
 import RFC_3986_Coder
@@ -31,8 +33,8 @@ extension GitHub.HTTP.Client {
                 throw .scheme(error)
             }
 
-            var headers = HTTP.Headers()
-            do throws(HTTP.Header.Field.Error) {
+            var headers = RFC_9110.Message.Headers()
+            do throws(RFC_9110.Field.Error) {
                 headers.append(
                     try .init(name: "Accept", value: "application/vnd.github+json")
                 )
@@ -62,13 +64,13 @@ extension GitHub.HTTP.Client {
                 authority: .init(host: .registeredName("api.github.com")),
                 path: path
             )
-            let httpRequest = HTTP.Request(
+            let httpRequest = HTTP.Router.Request(
                 method: .get,
-                target: .absolute(uri),
+                target: .resource(uri),
                 headers: headers
             )
 
-            let httpResponse: HTTP.Response
+            let httpResponse: HTTP.Router.Response
             do throws(ExecutionFailure) {
                 httpResponse = try await self.execute(httpRequest)
             } catch {
@@ -81,7 +83,7 @@ extension GitHub.HTTP.Client {
             }
 
             do throws(JSON.Error) {
-                let json = try JSON.parse(httpResponse.body ?? [])
+                let json = try JSON.parse(httpResponse.content ?? [])
                 let rawKind = try String.deserialize(json["type"])
                 guard let kind = GitHub.Repository.Content.Kind(rawValue: rawKind) else {
                     throw JSON.Error.typeMismatch(

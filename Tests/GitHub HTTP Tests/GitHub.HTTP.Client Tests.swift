@@ -1,4 +1,8 @@
+import Byte
 import GitHub_HTTP
+import HTTP
+import HTTP_Router
+import RFC_9110
 import Testing
 
 extension GitHub.HTTP {
@@ -6,9 +10,9 @@ extension GitHub.HTTP {
     struct Unit {
         @Test("The product re-exports the HTTP execute surface")
         func exports() {
-            let headers = HTTP.Headers()
-            let request = HTTP.Request(method: .options, target: .asterisk, headers: headers)
-            let response = HTTP.Response(status: .ok, headers: headers)
+            let headers = RFC_9110.Message.Headers()
+            let request = HTTP.Router.Request(method: .options, target: .asterisk, headers: headers)
+            let response = HTTP.Router.Response(status: .ok, headers: headers)
 
             #expect(request.method == .options)
             #expect(request.target == .asterisk)
@@ -43,10 +47,10 @@ extension GitHub.HTTP {
                     #expect(request.headers.first("X-GitHub-Api-Version")?.rawValue == "2026-03-10")
                     #expect(request.headers.first("Authorization") == nil)
 
-                    return HTTP.Response(
+                    return HTTP.Router.Response(
                         status: .ok,
                         headers: [],
-                        body: Self.bytes(
+                        content: Self.bytes(
                             #"[{"id":42,"name":"swift","archived":false,"disabled":false,"fork":false,"visibility":"public"}]"#
                         )
                     )
@@ -75,7 +79,7 @@ extension GitHub.HTTP {
                     // swift-linter:disable:next raw value access
                     // REASON: wire-shape assertion — typed value's wire form compared against expected wire literal ([PATTERN-017] boundary use, test-side of ruling class 3).
                     #expect(request.headers.first("Authorization")?.rawValue == "Bearer secret")
-                    return HTTP.Response(status: .ok, body: Self.bytes("[]"))
+                    return HTTP.Router.Response(status: .ok, content: Self.bytes("[]"))
                 },
                 pagination: .none
             )
@@ -128,7 +132,7 @@ extension GitHub.HTTP {
         )
 
         private static func bytes(_ string: String) -> [Byte] {
-            string.utf8.map(Byte.init)
+            string.utf8.map(Byte.init(bitPattern:))
         }
     }
 }

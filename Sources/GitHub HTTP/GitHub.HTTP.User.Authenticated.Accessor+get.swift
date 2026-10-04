@@ -16,7 +16,7 @@ extension GitHub.HTTP.User.Authenticated.Accessor {
             let httpResponse = try await self.client.response(for: httpRequest)
 
             do throws(JSON.Error) {
-                let json = try JSON.parse(httpResponse.body ?? [])
+                let json = try JSON.parse(httpResponse.content ?? [])
                 return try .init(
                     user: .init(
                         id: .init(

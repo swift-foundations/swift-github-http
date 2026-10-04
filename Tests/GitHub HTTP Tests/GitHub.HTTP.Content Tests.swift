@@ -1,4 +1,6 @@
+import Byte
 import GitHub_HTTP
+import GitHub_Standard
 import Testing
 
 extension GitHub.HTTP {
@@ -29,7 +31,7 @@ extension GitHub.HTTP {
                     // REASON: test asserts the raw wire string of the API-version header
                     #expect(request.headers.first("X-GitHub-Api-Version")?.rawValue == "2026-03-10")
                     #expect(request.headers.first("Authorization") == nil)
-                    return .init(status: .ok, body: Self.bytes(#"{"type":"file"}"#))
+                    return .init(status: .ok, content: Self.bytes(#"{"type":"file"}"#))
                 },
                 pagination: .none
             )
@@ -60,7 +62,7 @@ extension GitHub.HTTP {
                 agent: .init(rawValue: "workspace-tests"),
                 version: .init(rawValue: "2026-03-10"),
                 execute: { _ async throws(Failure) in
-                    .init(status: .ok, body: Self.bytes(#"{"type":"unknown"}"#))
+                    .init(status: .ok, content: Self.bytes(#"{"type":"unknown"}"#))
                 },
                 pagination: .none
             )
@@ -81,7 +83,7 @@ extension GitHub.HTTP {
         }
 
         private static func bytes(_ string: String) -> [Byte] {
-            string.utf8.map(Byte.init)
+            string.utf8.map(Byte.init(bitPattern:))
         }
 
         enum Failure: Swift.Error, Sendable {

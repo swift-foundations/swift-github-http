@@ -1,6 +1,8 @@
 import GitHub
 import GitHub_Standard
-import HTTP_Standard
+import HTTP
+import HTTP_Router
+import RFC_9110
 import JSON
 
 extension GitHub.HTTP.Client {
@@ -25,7 +27,7 @@ extension GitHub.HTTP.Client {
                 parameters.append(("page", String(page.rawValue)))
             }
 
-            let httpRequest: HTTP.Request
+            let httpRequest: HTTP.Router.Request
             do throws(GitHub.HTTP.Error<ExecutionFailure, Never>) {
                 httpRequest = try self.request(
                     path: [
@@ -42,7 +44,7 @@ extension GitHub.HTTP.Client {
                 throw .right(.transport)
             }
 
-            let httpResponse: HTTP.Response
+            let httpResponse: HTTP.Router.Response
             do throws(GitHub.HTTP.Error<ExecutionFailure, Never>) {
                 httpResponse = try await self.response(for: httpRequest)
             } catch {
@@ -57,7 +59,7 @@ extension GitHub.HTTP.Client {
 
             let response: GitHub.Repository.Stargazers.Response
             do throws(JSON.Error) {
-                let elements = try [JSON].deserialize(JSON.parse(httpResponse.body ?? []))
+                let elements = try [JSON].deserialize(JSON.parse(httpResponse.content ?? []))
                 var stargazers: [GitHub.Repository.Stargazers.Stargazer] = []
                 stargazers.reserveCapacity(elements.count)
                 for element in elements {

@@ -2,8 +2,9 @@ import GitHub
 import GitHub_Standard
 import HTML_Form_Coder
 import HTML_Standard
-import HTTP_Body
-import HTTP_Standard
+import HTTP
+import HTTP_Router
+import RFC_9110
 import JSON
 import RFC_3986
 import RFC_3986_Coder
@@ -15,7 +16,7 @@ extension GitHub.HTTP.OAuth.Token.Accessor {
         >
     {
         .init { request async throws(GitHub.HTTP.OAuth.Error<ExecutionFailure>) in
-            let httpRequest: HTTP.Request
+            let httpRequest: HTTP.Router.Request
             do throws(GitHub.HTTP.Error<ExecutionFailure, Never>) {
                 let scheme: RFC_3986.URI.Scheme
                 do throws(RFC_3986.URI.Scheme.Error) {
@@ -31,8 +32,8 @@ extension GitHub.HTTP.OAuth.Token.Accessor {
                     throw .path(error)
                 }
 
-                var headers = HTTP.Headers()
-                do throws(HTTP.Header.Field.Error) {
+                var headers = RFC_9110.Message.Headers()
+                do throws(RFC_9110.Field.Error) {
                     headers.append(try .init(name: "Accept", value: "application/json"))
                     headers.append(
                         // swift-linter:disable:next raw value access
@@ -54,9 +55,9 @@ extension GitHub.HTTP.OAuth.Token.Accessor {
                     )
                 }
 
-                var result = HTTP.Request(
+                var result = HTTP.Router.Request(
                     method: .post,
-                    target: .absolute(
+                    target: .resource(
                         .init(
                             scheme: scheme,
                             authority: .init(host: .registeredName("github.com")),
@@ -71,7 +72,7 @@ extension GitHub.HTTP.OAuth.Token.Accessor {
                 throw .http(error)
             }
 
-            let httpResponse: HTTP.Response
+            let httpResponse: HTTP.Router.Response
             do throws(GitHub.HTTP.Error<ExecutionFailure, Never>) {
                 httpResponse = try await self.client.response(for: httpRequest)
             } catch {
@@ -80,7 +81,7 @@ extension GitHub.HTTP.OAuth.Token.Accessor {
 
             let json: JSON
             do throws(JSON.Error) {
-                json = try JSON.parse(httpResponse.body ?? [])
+                json = try JSON.parse(httpResponse.content ?? [])
             } catch {
                 throw .http(.json(error))
             }

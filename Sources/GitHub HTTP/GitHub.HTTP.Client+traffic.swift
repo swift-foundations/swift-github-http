@@ -28,7 +28,7 @@ extension GitHub.HTTP.Client {
                 let httpResponse = try await self.response(for: httpRequest)
 
                 do throws(JSON.Error) {
-                    let json = try JSON.parse(httpResponse.body ?? [])
+                    let json = try JSON.parse(httpResponse.content ?? [])
                     let elements = try [JSON].deserialize(json["views"])
                     var views: [GitHub.Repository.Traffic.Views.View] = []
                     views.reserveCapacity(elements.count)
@@ -76,7 +76,7 @@ extension GitHub.HTTP.Client {
                 let httpResponse = try await self.response(for: httpRequest)
 
                 do throws(JSON.Error) {
-                    let json = try JSON.parse(httpResponse.body ?? [])
+                    let json = try JSON.parse(httpResponse.content ?? [])
                     let elements = try [JSON].deserialize(json["clones"])
                     var clones: [GitHub.Repository.Traffic.Clones.Clone] = []
                     clones.reserveCapacity(elements.count)
@@ -121,7 +121,7 @@ extension GitHub.HTTP.Client {
 
                 do throws(JSON.Error) {
                     let elements = try [JSON].deserialize(
-                        JSON.parse(httpResponse.body ?? [])
+                        JSON.parse(httpResponse.content ?? [])
                     )
                     var paths: [GitHub.Repository.Traffic.Paths.Path] = []
                     paths.reserveCapacity(elements.count)
@@ -160,7 +160,7 @@ extension GitHub.HTTP.Client {
 
                 do throws(JSON.Error) {
                     let elements = try [JSON].deserialize(
-                        JSON.parse(httpResponse.body ?? [])
+                        JSON.parse(httpResponse.content ?? [])
                     )
                     var referrers: [GitHub.Repository.Traffic.Referrers.Referrer] = []
                     referrers.reserveCapacity(elements.count)

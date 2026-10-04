@@ -1,4 +1,7 @@
 import GitHub_HTTP
+import HTTP
+import HTTP_Router
+import RFC_9110
 import Testing
 
 extension GitHub.HTTP.User {
@@ -6,7 +9,7 @@ extension GitHub.HTTP.User {
     struct Repositories {
         @Test("Authenticated-user repositories preserve filters across pages")
         func page() async throws {
-            let headers = try HTTP.Headers([
+            let headers = try RFC_9110.Message.Headers([
                 .init(
                     name: "Link",
                     value: "<https://api.github.com/user/repos?page=3>; rel=next"
@@ -30,7 +33,7 @@ extension GitHub.HTTP.User {
                     return .init(
                         status: .ok,
                         headers: headers,
-                        body: GitHub.HTTP.Fixture.bytes("[\(GitHub.HTTP.Fixture.metadata)]")
+                        content: GitHub.HTTP.Fixture.bytes("[\(GitHub.HTTP.Fixture.metadata)]")
                     )
                 },
                 pagination: .link
@@ -99,7 +102,7 @@ extension GitHub.HTTP.User {
         )
 
         private static func client(
-            status: HTTP.Status
+            status: RFC_9110.Status
         ) -> GitHub.User.Repositories.Client {
             GitHub.HTTP.Client<GitHub.HTTP.Fixture.Execution, Never>(
                 agent: .init(rawValue: "user-repository-tests"),

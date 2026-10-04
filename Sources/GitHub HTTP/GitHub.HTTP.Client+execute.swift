@@ -1,11 +1,13 @@
 import GitHub
-import HTTP_Standard
+import HTTP
+import HTTP_Router
+import RFC_9110
 
 extension GitHub.HTTP.Client {
     func response(
-        for request: HTTP.Request
-    ) async throws(GitHub.HTTP.Error<ExecutionFailure, Never>) -> HTTP.Response {
-        let response: HTTP.Response
+        for request: HTTP.Router.Request
+    ) async throws(GitHub.HTTP.Error<ExecutionFailure, Never>) -> HTTP.Router.Response {
+        let response: HTTP.Router.Response
         do throws(ExecutionFailure) {
             response = try await self.execute(request)
         } catch {

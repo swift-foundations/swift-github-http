@@ -1,4 +1,7 @@
 import GitHub_HTTP
+import HTTP
+import HTTP_Router
+import RFC_9110
 import Testing
 
 extension GitHub.HTTP {
@@ -6,7 +9,7 @@ extension GitHub.HTTP {
     struct Stargazers {
         @Test("Stargazers use the event media type and preserve pagination fields")
         func page() async throws {
-            let headers = try HTTP.Headers([
+            let headers = try RFC_9110.Message.Headers([
                 .init(
                     name: "Link",
                     value:
@@ -32,7 +35,7 @@ extension GitHub.HTTP {
                     return .init(
                         status: .ok,
                         headers: headers,
-                        body: Fixture.bytes(
+                        content: Fixture.bytes(
                             "[{\"starred_at\":\"2026-07-21T12:00:00Z\",\"user\":\(Fixture.user)}]"
                         )
                     )
@@ -89,14 +92,14 @@ extension GitHub.HTTP {
         )
 
         private static func client(
-            status: HTTP.Status,
+            status: RFC_9110.Status,
             body: String = "[]"
         ) -> GitHub.Repository.Stargazers.Client {
             GitHub.HTTP.Client<Fixture.Execution, Never>(
                 agent: .init(rawValue: "stargazer-tests"),
                 version: .init(rawValue: "2026-03-10"),
                 execute: { _ async throws(Fixture.Execution) in
-                    .init(status: status, body: Fixture.bytes(body))
+                    .init(status: status, content: Fixture.bytes(body))
                 },
                 pagination: .none
             ).stargazers(authentication: .none)

@@ -22,7 +22,7 @@ extension GitHub.HTTP.Client {
             do throws(JSON.Error) {
                 return try .init(
                     repository: Self.metadata(
-                        from: JSON.parse(httpResponse.body ?? [])
+                        from: JSON.parse(httpResponse.content ?? [])
                     )
                 )
             } catch {

@@ -50,7 +50,7 @@ extension GitHub.HTTP.OAuth {
                             == "application/x-www-form-urlencoded"
                     )
                     let body = String(
-                        decoding: (request.body ?? []).map(\.underlying),
+                        decoding: (request.content ?? []).map(\.underlying),
                         as: UTF8.self
                     )
                     #expect(
@@ -59,7 +59,7 @@ extension GitHub.HTTP.OAuth {
                     )
                     return .init(
                         status: .ok,
-                        body: GitHub.HTTP.Fixture.bytes(
+                        content: GitHub.HTTP.Fixture.bytes(
                             #"{"access_token":"token","token_type":"bearer","scope":"read:user,user:email"}"#
                         )
                     )
@@ -86,7 +86,7 @@ extension GitHub.HTTP.OAuth {
                 execute: { _ async throws(GitHub.HTTP.Fixture.Execution) in
                     .init(
                         status: .ok,
-                        body: GitHub.HTTP.Fixture.bytes(
+                        content: GitHub.HTTP.Fixture.bytes(
                             #"{"error":"bad_verification_code","error_description":"The code passed is incorrect or expired."}"#
                         )
                     )
